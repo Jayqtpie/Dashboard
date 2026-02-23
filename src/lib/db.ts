@@ -9,11 +9,26 @@ export function getDb() {
 
   const projectRoot = process.cwd();
   const dataDir = path.join(projectRoot, 'data');
-  const dbPath = process.env.DB_PATH
-    ? path.resolve(process.env.DB_PATH)
+
+  // On serverless platforms (e.g. Vercel), the deployment filesystem is read-only.
+  // Use /tmp for writable runtime state unless DB_PATH is explicitly provided.
+  const defaultDbPath = process.env.VERCEL
+    ? '/tmp/guidedbarakah.sqlite'
     : path.join(dataDir, 'guidedbarakah.sqlite');
 
+  const dbPath = process.env.DB_PATH
+    ? path.resolve(process.env.DB_PATH)
+    : defaultDbPath;
+
   fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+
+  // If running on serverless and no runtime DB exists yet, copy bundled seed DB.
+  if (!fs.existsSync(dbPath)) {
+    const seedPath = path.join(dataDir, 'guidedbarakah.sqlite');
+    if (fs.existsSync(seedPath)) {
+      fs.copyFileSync(seedPath, dbPath);
+    }
+  }
 
   _db = new Database(dbPath);
   _db.pragma('journal_mode = WAL');
