@@ -6,9 +6,11 @@ type Star = {
   x: number;
   y: number;
   r: number;
-  a: number;
+  a: number; // base alpha
   vx: number;
   vy: number;
+  tw: number; // twinkle speed
+  ph: number; // phase
 };
 
 function clamp(n: number, min: number, max: number) {
@@ -22,6 +24,8 @@ export default function InteractiveBackground() {
   const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
   const pointerRef = useRef({ x: 0.5, y: 0.35 });
   const smoothRef = useRef({ x: 0.5, y: 0.35 });
+  const timeRef = useRef(0);
+  const redrawPendingRef = useRef(false);
 
   const reduceMotion = useMemo(() => {
     if (typeof window === 'undefined') return true;
@@ -32,12 +36,11 @@ export default function InteractiveBackground() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Respect reduced motion: keep a very subtle static field.
-    const motionEnabled = !reduceMotion;
-
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
     const context: CanvasRenderingContext2D = ctx;
+
+    const motionEnabled = !reduceMotion;
 
     function setSize(target: HTMLCanvasElement) {
       const parent = target.parentElement;
@@ -53,16 +56,20 @@ export default function InteractiveBackground() {
 
       // Density scales with area, capped for performance.
       const area = rect.width * rect.height;
-      const targetCount = Math.round(clamp(area / 18000, 30, 110));
+      const targetCount = Math.round(clamp(area / 16500, 36, 140));
       const next: Star[] = [];
       for (let i = 0; i < targetCount; i++) {
+        const r = 0.55 + Math.random() * 1.7;
         next.push({
           x: Math.random() * rect.width,
           y: Math.random() * rect.height,
-          r: 0.6 + Math.random() * 1.6,
-          a: 0.25 + Math.random() * 0.55,
-          vx: (Math.random() - 0.5) * 0.15,
-          vy: (Math.random() - 0.5) * 0.12,
+          r,
+          a: 0.18 + Math.random() * 0.58,
+          vx: (Math.random() - 0.5) * 0.14,
+          vy: (Math.random() - 0.5) * 0.11,
+          // a mix of gentle twinkle rates; slightly slower for larger stars
+          tw: 0.35 + Math.random() * 0.95 - r * 0.08,
+          ph: Math.random() * Math.PI * 2,
         });
       }
       starsRef.current = next;
@@ -70,7 +77,10 @@ export default function InteractiveBackground() {
 
     setSize(canvas);
 
-    const ro = new ResizeObserver(() => setSize(canvas));
+    const ro = new ResizeObserver(() => {
+      setSize(canvas);
+      requestRedraw();
+    });
     if (canvas.parentElement) ro.observe(canvas.parentElement);
 
     function onPointerMove(e: PointerEvent) {
@@ -79,24 +89,29 @@ export default function InteractiveBackground() {
       // Normalize to 0..1
       pointerRef.current.x = clamp(e.clientX / w, 0, 1);
       pointerRef.current.y = clamp(e.clientY / h, 0, 1);
+      requestRedraw();
     }
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
 
-    const teal = 'rgba(26, 83, 92, 0.35)';
+    const teal = 'rgba(26, 83, 92, 0.34)';
     const gold = 'rgba(201, 168, 76, 0.22)';
     const star = 'rgba(250, 240, 230, 1)';
 
-    function draw() {
+    function draw(nowMs: number) {
       const { w, h } = sizeRef.current;
       if (!w || !h) return;
+
+      // time in seconds (kept stable even when throttling)
+      const now = nowMs / 1000;
+      timeRef.current = now;
 
       // Smooth cursor parallax to avoid distraction.
       const sx = smoothRef.current.x;
       const sy = smoothRef.current.y;
       const tx = pointerRef.current.x;
       const ty = pointerRef.current.y;
-      const lerp = motionEnabled ? 0.06 : 1;
+      const lerp = motionEnabled ? 0.055 : 0.18;
       smoothRef.current.x = sx + (tx - sx) * lerp;
       smoothRef.current.y = sy + (ty - sy) * lerp;
 
@@ -107,21 +122,24 @@ export default function InteractiveBackground() {
 
       // Subtle cursor-reactive glow.
       const gx = w * (0.5 + px * 0.22);
-      const gy = h * (0.35 + py * 0.18);
-      const grad = context.createRadialGradient(gx, gy, 10, gx, gy, Math.min(w, h) * 0.55);
+      const gy = h * (0.32 + py * 0.16);
+      const grad = context.createRadialGradient(gx, gy, 14, gx, gy, Math.min(w, h) * 0.58);
       grad.addColorStop(0, teal);
-      grad.addColorStop(0.45, gold);
+      grad.addColorStop(0.48, gold);
       grad.addColorStop(1, 'rgba(0,0,0,0)');
       context.fillStyle = grad;
       context.fillRect(0, 0, w, h);
 
-      // Stars
       const stars = starsRef.current;
-      const parX = px * 12;
-      const parY = py * 10;
 
+      // Parallax: subtle, cursor-linked.
+      const parX = px * 14;
+      const parY = py * 12;
+
+      // Twinkle: very subtle (premium, not "sparkly").
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
+
         if (motionEnabled) {
           s.x += s.vx;
           s.y += s.vy;
@@ -132,10 +150,15 @@ export default function InteractiveBackground() {
           if (s.y > h + 10) s.y = -10;
         }
 
-        const x = s.x + parX * (0.35 + s.r * 0.15);
-        const y = s.y + parY * (0.35 + s.r * 0.15);
+        const depth = 0.32 + s.r * 0.18;
+        const x = s.x + parX * depth;
+        const y = s.y + parY * depth;
 
-        context.globalAlpha = s.a;
+        const twinkle = motionEnabled
+          ? 0.72 + 0.28 * Math.sin(now * s.tw + s.ph)
+          : 1;
+
+        context.globalAlpha = s.a * twinkle;
         context.fillStyle = star;
         context.beginPath();
         context.arc(x, y, s.r, 0, Math.PI * 2);
@@ -145,13 +168,29 @@ export default function InteractiveBackground() {
       context.globalAlpha = 1;
     }
 
-    function tick() {
-      draw();
+    function tick(nowMs: number) {
+      redrawPendingRef.current = false;
+      draw(nowMs);
       rafRef.current = window.requestAnimationFrame(tick);
     }
 
-    // Even with reduced motion we render (static-ish) for consistent premium feel.
-    rafRef.current = window.requestAnimationFrame(tick);
+    function requestRedraw() {
+      if (motionEnabled) return;
+      if (redrawPendingRef.current) return;
+      redrawPendingRef.current = true;
+      // Single-frame redraw with rAF (no continuous loop) for reduced motion.
+      rafRef.current = window.requestAnimationFrame((ms) => {
+        redrawPendingRef.current = false;
+        draw(ms);
+      });
+    }
+
+    // Start animation loop only when motion is allowed.
+    if (motionEnabled) {
+      rafRef.current = window.requestAnimationFrame(tick);
+    } else {
+      requestRedraw();
+    }
 
     return () => {
       window.removeEventListener('pointermove', onPointerMove);
@@ -163,9 +202,9 @@ export default function InteractiveBackground() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
-      <canvas ref={canvasRef} className="h-full w-full opacity-70" />
+      <canvas ref={canvasRef} className="h-full w-full opacity-75" />
       {/* Extra soft vignette for readability */}
-      <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_50%_0%,rgba(0,0,0,0.0),rgba(0,0,0,0.55))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_50%_0%,rgba(0,0,0,0.0),rgba(0,0,0,0.62))]" />
     </div>
   );
 }

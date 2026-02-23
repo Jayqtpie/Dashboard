@@ -18,43 +18,83 @@ export default function Shell({ children }: { children: ReactNode }) {
     <div className="min-h-screen">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-black/80 focus:px-3 focus:py-2 focus:text-sm focus:text-[var(--gb-cream)] focus:ring-2 focus:ring-[var(--gb-gold)]/60"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-black/80 focus:px-3 focus:py-2 focus:text-sm focus:text-[var(--gb-cream)] focus:ring-2 focus:ring-[var(--gb-gold)]/60"
       >
         Skip to content
       </a>
 
       <InteractiveBackground />
 
-      <header className="sticky top-0 z-10 border-b border-[var(--border)] bg-black/30 backdrop-blur supports-[backdrop-filter]:bg-black/20">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-          <div className="min-w-0">
-            <div className="text-[11px] tracking-[0.32em] text-[var(--muted)]">GUIDEDBARAKAH</div>
-            <div className="mt-1 flex items-center gap-2">
-              <div className="text-lg font-semibold leading-6 tracking-tight">
-                Command Center
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-10">
+          {/* Sidebar (desktop) */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-6">
+              <div className="glass card-edge rounded-3xl p-6 shadow-[var(--shadow-card)]">
+                <div className="text-[11px] tracking-[0.38em] text-[var(--muted)]">
+                  GUIDEDBARAKAH
+                </div>
+                <div className="mt-2 flex items-center justify-between gap-3">
+                  <div className="text-xl font-semibold leading-7 tracking-tight">Command Center</div>
+                  <span className="rounded-full border border-[var(--border)] bg-white/5 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-[var(--gb-gold)]">
+                    MVP
+                  </span>
+                </div>
+
+                <div className="mt-5 space-y-2">
+                  {tabs.map((t) => (
+                    <NavLink key={t.href} href={t.href} label={t.label} active={pathname === t.href} />
+                  ))}
+                </div>
+
+                <div className="mt-6 rounded-2xl border border-[var(--border)] bg-black/25 p-4">
+                  <div className="text-xs text-[var(--muted)]">Local-first</div>
+                  <div className="mt-1 text-sm text-[var(--gb-cream)]">
+                    Data lives in{' '}
+                    <code className="rounded-lg border border-[var(--border)] bg-white/5 px-1.5 py-0.5 text-xs">
+                      data/guidedbarakah.sqlite
+                    </code>
+                  </div>
+                </div>
               </div>
-              <span className="rounded-full border border-[var(--border)] bg-white/5 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-[var(--gb-gold)]">
-                MVP
-              </span>
             </div>
+          </aside>
+
+          {/* Main column */}
+          <div className="min-w-0">
+            {/* Mobile top bar */}
+            <header className="sticky top-0 z-10 -mx-4 mb-6 border-b border-[var(--border)] bg-black/40 px-4 py-4 backdrop-blur supports-[backdrop-filter]:bg-black/25 sm:-mx-6 sm:px-6 lg:hidden">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="text-[11px] tracking-[0.34em] text-[var(--muted)]">GUIDEDBARAKAH</div>
+                  <div className="mt-1 flex items-center gap-2">
+                    <div className="text-lg font-semibold leading-6 tracking-tight">Command Center</div>
+                    <span className="rounded-full border border-[var(--border)] bg-white/5 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-[var(--gb-gold)]">
+                      MVP
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <nav className="mt-4 grid grid-cols-2 gap-2">
+                {tabs.map((t) => (
+                  <NavLink key={t.href} href={t.href} label={t.label} active={pathname === t.href} />
+                ))}
+              </nav>
+            </header>
+
+            <main id="main" className="pb-10 pt-2 lg:pt-6">
+              {children}
+            </main>
+
+            <footer className="pb-10 text-xs text-[var(--muted)] lg:hidden">
+              Local-first. SQLite stored in{' '}
+              <code className="rounded-lg border border-[var(--border)] bg-white/5 px-1.5 py-0.5">
+                data/guidedbarakah.sqlite
+              </code>
+            </footer>
           </div>
-
-          <nav className="flex gap-1 rounded-2xl border border-[var(--border)] bg-white/5 p-1 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-            {tabs.map((t) => (
-              <NavLink key={t.href} href={t.href} label={t.label} active={pathname === t.href} />
-            ))}
-          </nav>
         </div>
-      </header>
-
-      <main id="main" className="mx-auto max-w-6xl px-5 py-8">
-        {children}
-      </main>
-
-      <footer className="mx-auto max-w-6xl px-5 pb-10 pt-4 text-xs text-[var(--muted)]">
-        Local-first. SQLite stored in{' '}
-        <code className="rounded-lg border border-[var(--border)] bg-white/5 px-1.5 py-0.5">data/guidedbarakah.sqlite</code>
-      </footer>
+      </div>
     </div>
   );
 }

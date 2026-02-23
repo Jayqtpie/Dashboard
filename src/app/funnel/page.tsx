@@ -18,7 +18,9 @@ function pct(purchases: number, clicks: number) {
 
 export default function FunnelPage() {
   const [rows, setRows] = useState<FunnelRow[]>([]);
-  const [draft, setDraft] = useState<Record<string, { trigger_count: string; clicks: string; purchases: string }>>({});
+  const [draft, setDraft] = useState<
+    Record<string, { trigger_count: string; clicks: string; purchases: string }>
+  >({});
 
   async function load() {
     const data = await fetch('/api/funnel').then((r) => r.json());
@@ -69,11 +71,44 @@ export default function FunnelPage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
+      <div className="glass card-edge rounded-3xl p-6 shadow-[var(--shadow-card)]">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0">
+            <div className="text-[11px] tracking-[0.34em] text-[var(--muted)]">FUNNEL</div>
+            <h1 className="mt-2 text-2xl font-semibold leading-8 tracking-tight text-[var(--gb-cream)]">
+              Keyword performance, at a glance.
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
+              Track trigger → click → purchase. Keep the system honest.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-[var(--border)] bg-black/25 px-4 py-3 text-sm">
+            <div className="text-xs text-[var(--muted)]">Overall conversion</div>
+            <div className="mt-1 text-xl font-semibold text-[var(--gb-gold)]">
+              {pct(totals.purchases, totals.clicks)}%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card title="Total triggers" subtitle="Keyword triggers detected">
+          <div className="text-4xl font-semibold leading-none">{totals.trigger}</div>
+        </Card>
+        <Card title="Total clicks" subtitle="Landing clicks">
+          <div className="text-4xl font-semibold leading-none">{totals.clicks}</div>
+        </Card>
+        <Card title="Total purchases" subtitle="Attribution window">
+          <div className="text-4xl font-semibold leading-none">{totals.purchases}</div>
+        </Card>
+      </div>
+
       <Card
-        title="Funnel — Keyword Performance"
-        subtitle="Track trigger → click → purchase. Keep the system honest."
-        right={<div className="text-xs text-[var(--muted)]">Overall conversion: {pct(totals.purchases, totals.clicks)}%</div>}
+        title="Keyword Table"
+        subtitle="Edit values and save per-row."
+        right={<div className="text-xs text-[var(--muted)]">Conv % uses purchases / clicks</div>}
       >
         <div className="overflow-x-auto">
           <table className="w-full border-separate border-spacing-y-2 text-sm">
@@ -92,7 +127,7 @@ export default function FunnelPage() {
                 const d = draft[r.keyword];
                 return (
                   <tr key={r.keyword} className="glass-strong">
-                    <td className="rounded-l-2xl px-3 py-3 font-semibold tracking-wide text-[var(--gb-gold)]">
+                    <td className="rounded-l-3xl px-4 py-4 font-semibold tracking-wide text-[var(--gb-gold)]">
                       {r.keyword}
                     </td>
                     <td className="px-3 py-3">
@@ -131,10 +166,10 @@ export default function FunnelPage() {
                         }
                       />
                     </td>
-                    <td className="px-3 py-3 text-[var(--gb-cream)]">
+                    <td className="px-3 py-3 font-semibold text-[var(--gb-cream)]">
                       {pct(Number(d?.purchases ?? r.purchases), Number(d?.clicks ?? r.clicks))}%
                     </td>
-                    <td className="rounded-r-2xl px-3 py-3">
+                    <td className="rounded-r-3xl px-4 py-4">
                       <div className="flex justify-end">
                         <Button variant="outline" onClick={() => saveRow(r.keyword)}>
                           Save
@@ -146,21 +181,6 @@ export default function FunnelPage() {
               })}
             </tbody>
           </table>
-        </div>
-
-        <div className="mt-4 grid gap-2 md:grid-cols-3">
-          <div className="rounded-2xl border border-[var(--border)] bg-black/20 p-4">
-            <div className="text-xs text-[var(--muted)]">Total triggers</div>
-            <div className="mt-1 text-2xl font-semibold">{totals.trigger}</div>
-          </div>
-          <div className="rounded-2xl border border-[var(--border)] bg-black/20 p-4">
-            <div className="text-xs text-[var(--muted)]">Total clicks</div>
-            <div className="mt-1 text-2xl font-semibold">{totals.clicks}</div>
-          </div>
-          <div className="rounded-2xl border border-[var(--border)] bg-black/20 p-4">
-            <div className="text-xs text-[var(--muted)]">Total purchases</div>
-            <div className="mt-1 text-2xl font-semibold">{totals.purchases}</div>
-          </div>
         </div>
       </Card>
     </div>
