@@ -119,60 +119,65 @@ export default function OpsHealthPage() {
         </div>
       </div>
 
-      {/* Above the fold: status + quick alert creation */}
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
-        <div className="grid gap-6 md:grid-cols-3">
-          <Card title="Delivery errors" subtitle="If this rises, fix immediately.">
-            <div className="glass-strong rounded-3xl p-6">
+      {/* Above the fold: metrics */}
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <Card title="Delivery errors" subtitle="If this rises, fix immediately.">
+          <div className="glass-strong rounded-3xl border border-[var(--border)]/40 p-5 min-h-[168px] flex flex-col justify-between">
+            <div>
               <div className="text-[11px] tracking-[0.34em] text-[var(--muted)]">ERROR COUNT</div>
-              <div className="mt-3 text-6xl font-semibold leading-none">{rollup?.delivery_errors ?? '—'}</div>
-              <div className="mt-3 text-sm text-[var(--muted)]">Email / webhook / fulfillment failures.</div>
+              <div className="mt-3 text-5xl font-semibold leading-none tracking-tight">{rollup?.delivery_errors ?? '—'}</div>
+              <div className="mt-3 text-sm leading-6 text-[var(--muted)]">Email / webhook / fulfillment failures.</div>
             </div>
-          </Card>
+          </div>
+        </Card>
 
-          <Card title="Zapier success" subtitle="Recent window">
-            <div className="rounded-3xl border border-[var(--border)] bg-black/20 p-6">
-              <div className="text-5xl font-semibold leading-none">{rollup?.zapier_success ?? '—'}</div>
+        <Card title="Zapier success" subtitle="Recent window">
+          <div className="rounded-3xl border border-[var(--border)] bg-black/20 p-5 min-h-[168px] flex flex-col justify-between">
+            <div>
+              <div className="text-5xl font-semibold leading-none tracking-tight">{rollup?.zapier_success ?? '—'}</div>
               <div className="mt-2 text-sm text-[var(--muted)]">Successful runs</div>
             </div>
-          </Card>
+          </div>
+        </Card>
 
-          <Card title="Zapier fail" subtitle="Investigate spikes">
-            <div className="rounded-3xl border border-[var(--border)] bg-black/20 p-6">
-              <div className="text-5xl font-semibold leading-none">{rollup?.zapier_fail ?? '—'}</div>
+        <Card title="Zapier fail" subtitle="Investigate spikes">
+          <div className="rounded-3xl border border-[var(--border)] bg-black/20 p-5 min-h-[168px] flex flex-col justify-between">
+            <div>
+              <div className="text-5xl font-semibold leading-none tracking-tight">{rollup?.zapier_fail ?? '—'}</div>
               <div className="mt-2 text-sm text-[var(--muted)]">Failed runs</div>
             </div>
-          </Card>
-
-          <div className="md:col-span-3">
-            <Card
-              title="Rollup inputs"
-              subtitle={rollup?.updated_at ? `Last updated: ${new Date(rollup.updated_at).toLocaleString()}` : 'Update the rollup (MVP manual).'}
-              right={<Button onClick={saveRollup}>Save</Button>}
-            >
-              <div className="grid gap-4 md:grid-cols-3">
-                <div>
-                  <div className="text-xs text-[var(--muted)]">Zapier success</div>
-                  <div className="mt-2">
-                    <TextInput type="number" value={zapierSuccess} onChange={setZapierSuccess} />
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xs text-[var(--muted)]">Zapier fail</div>
-                  <div className="mt-2">
-                    <TextInput type="number" value={zapierFail} onChange={setZapierFail} />
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xs text-[var(--muted)]">Delivery errors</div>
-                  <div className="mt-2">
-                    <TextInput type="number" value={deliveryErrors} onChange={setDeliveryErrors} />
-                  </div>
-                </div>
-              </div>
-            </Card>
           </div>
-        </div>
+        </Card>
+      </div>
+
+      {/* Inputs + quick alert creation */}
+      <div className="grid gap-6 lg:items-start lg:grid-cols-[minmax(0,1fr)_420px]">
+        <Card
+          title="Rollup inputs"
+          subtitle={rollup?.updated_at ? `Last updated: ${new Date(rollup.updated_at).toLocaleString()}` : 'Update the rollup (MVP manual).'}
+          right={<Button onClick={saveRollup}>Save</Button>}
+        >
+          <div className="grid gap-4 md:grid-cols-3">
+            <div>
+              <div className="text-xs text-[var(--muted)]">Zapier success</div>
+              <div className="mt-2">
+                <TextInput type="number" value={zapierSuccess} onChange={setZapierSuccess} />
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-[var(--muted)]">Zapier fail</div>
+              <div className="mt-2">
+                <TextInput type="number" value={zapierFail} onChange={setZapierFail} />
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-[var(--muted)]">Delivery errors</div>
+              <div className="mt-2">
+                <TextInput type="number" value={deliveryErrors} onChange={setDeliveryErrors} />
+              </div>
+            </div>
+          </div>
+        </Card>
 
         <Card title="Create alert" subtitle="Log incidents fast (MVP manual).">
           <div className="space-y-4">
