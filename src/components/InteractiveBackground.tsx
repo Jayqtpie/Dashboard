@@ -5,7 +5,10 @@ import { useEffect, useMemo, useRef } from 'react';
 type Star = {
   x: number;
   y: number;
-  r: number;
+  r: number; // outer radius
+  inner: number; // inner radius for star points
+  points: 4 | 5;
+  rot: number;
   a: number; // base alpha
   tw: number; // twinkle speed
   twA: number; // twinkle amount
@@ -16,6 +19,30 @@ type Star = {
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
+}
+
+function drawStarPath(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  outerR: number,
+  innerR: number,
+  points: number,
+  rotation: number
+) {
+  // Small, crisp star glyph (4/5 point). Keeping it path-based avoids image fetch
+  // and stays fast at our capped counts.
+  const step = Math.PI / points;
+  let a = rotation;
+
+  context.beginPath();
+  context.moveTo(x + Math.cos(a) * outerR, y + Math.sin(a) * outerR);
+  for (let i = 0; i < points * 2; i++) {
+    const r = i % 2 === 0 ? outerR : innerR;
+    context.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r);
+    a += step;
+  }
+  context.closePath();
 }
 
 // Smooth distance falloff (0..1), 1 near the cursor.
@@ -70,18 +97,28 @@ export default function InteractiveBackground() {
 
       const next: Star[] = [];
       for (let i = 0; i < targetCount; i++) {
-        const r = 0.6 + Math.random() * 2.25;
-        const isBright = Math.random() < 0.2;
+        // Slightly larger than the old circles so the star silhouette reads.
+        const baseR = 0.9 + Math.random() * 2.35;
+        const isBright = Math.random() < 0.22;
+        const points: 4 | 5 = Math.random() < 0.65 ? 5 : 4;
+
+        const outer = isBright ? baseR * 1.15 : baseR;
+        // Inner radius tuned per points so 4-point stars don't look like diamonds.
+        const innerRatio = points === 5 ? 0.48 : 0.40;
+
         next.push({
           x: Math.random() * rect.width,
           y: Math.random() * rect.height,
-          r: isBright ? r * 1.15 : r,
-          // Brighter base field for stronger contrast (kept under 1 once twinkle/hover applies)
-          a: (isBright ? 0.62 : 0.42) + Math.random() * (isBright ? 0.30 : 0.34),
-          // a mix of twinkle rates; slightly slower for larger stars
-          tw: 0.45 + Math.random() * 1.5 - r * 0.09,
-          // Stronger twinkle amplitude, still smooth (eased in draw loop)
-          twA: (isBright ? 0.55 : 0.34) + Math.random() * (isBright ? 0.25 : 0.22),
+          r: outer,
+          inner: outer * innerRatio,
+          points,
+          rot: Math.random() * Math.PI * 2,
+          // Brighter base field for strong presence; kept tasteful with vignette.
+          a: (isBright ? 0.78 : 0.56) + Math.random() * (isBright ? 0.20 : 0.26),
+          // A mix of twinkle rates; slightly slower for larger stars.
+          tw: 0.42 + Math.random() * 1.45 - baseR * 0.08,
+          // Stronger twinkle amplitude with higher peaks.
+          twA: (isBright ? 0.75 : 0.48) + Math.random() * (isBright ? 0.18 : 0.22),
           ph: Math.random() * Math.PI * 2,
           hf: 0,
           bright: isBright,
@@ -125,6 +162,8 @@ export default function InteractiveBackground() {
       lastNowRef.current = now;
 
       context.clearRect(0, 0, w, h);
+      context.lineJoin = 'round';
+      context.miterLimit = 2.2;
 
       // No colored radial glow here (prevents large teal/gold “blob” artifacts).
       // Cursor glow: stars brighten near the pointer (no positional shift/parallax).
@@ -135,11 +174,11 @@ export default function InteractiveBackground() {
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
 
-        // Smooth, pronounced twinkle with gentle easing (sinusoidal -> eased pulse).
+        // Smooth twinkle with brighter peaks (sinusoidal -> peaky eased pulse).
         const phase = now * s.tw + s.ph;
         const pulse01 = motionEnabled ? (Math.sin(phase) + 1) / 2 : 1;
-        const easedPulse = 0.15 + 0.85 * Math.pow(pulse01, 2.2);
-        const twinkle = motionEnabled ? 0.22 + (0.95 + 0.85 * s.twA) * easedPulse : 1;
+        const easedPulse = 0.12 + 0.88 * Math.pow(pulse01, 3.1);
+        const twinkle = motionEnabled ? 0.35 + (1.05 + 1.15 * s.twA) * easedPulse : 1;
 
         const dx = s.x - px;
         const dy = s.y - py;
@@ -152,25 +191,34 @@ export default function InteractiveBackground() {
         s.hf = s.hf + (glowTarget - s.hf) * a;
 
         // Elegant “light up” near cursor; no positional shift/parallax.
-        const boost = 1 + s.hf * 2.8;
+        const boost = 1 + s.hf * 3.4;
         const alpha = clamp(s.a * twinkle * boost, 0, 1);
         context.globalAlpha = alpha;
 
         // Subtle halo only for brighter/hovered stars (keeps perf predictable).
-        const halo = Math.max(s.hf, s.bright ? 0.08 : 0);
-        if (halo > 0.12) {
-          context.shadowColor = 'rgba(255,255,255,0.9)';
-          context.shadowBlur = 14 * halo;
+        const halo = Math.max(s.hf, s.bright ? 0.10 : 0);
+        if (halo > 0.10) {
+          context.shadowColor = 'rgba(255,255,255,0.95)';
+          context.shadowBlur = 18 * halo;
         } else {
           context.shadowBlur = 0;
         }
 
-        const r = s.r * (1 + s.hf * 0.55);
+        const outer = s.r * (1 + s.hf * 0.55);
+        const inner = s.inner * (1 + s.hf * 0.42);
 
         context.fillStyle = star;
-        context.beginPath();
-        context.arc(s.x, s.y, r, 0, Math.PI * 2);
+        drawStarPath(context, s.x, s.y, outer, inner, s.points, s.rot);
         context.fill();
+
+        // Tiny bright core helps the shape read at small sizes.
+        if (outer > 1.15) {
+          context.shadowBlur = 0;
+          context.globalAlpha = clamp(alpha * 0.85 + 0.12, 0, 1);
+          context.beginPath();
+          context.arc(s.x, s.y, Math.max(0.45, outer * 0.16), 0, Math.PI * 2);
+          context.fill();
+        }
       }
 
       context.shadowBlur = 0;
