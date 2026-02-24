@@ -45,11 +45,9 @@ html {
 }
 
 body {
-  background:
-    radial-gradient(1100px 700px at 18% -12%, rgba(26, 83, 92, 0.46), transparent 58%),
-    radial-gradient(900px 520px at 92% 0%, rgba(201, 168, 76, 0.20), transparent 50%),
-    radial-gradient(860px 560px at 55% 108%, rgba(26, 83, 92, 0.18), transparent 56%),
-    var(--background);
+  /* Keep the page background clean and neutral; the starfield canvas provides texture.
+     (Removed teal/gold radial glows to avoid large “blob” artifacts.) */
+  background: var(--background);
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
