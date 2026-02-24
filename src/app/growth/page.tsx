@@ -116,7 +116,7 @@ export default function GrowthPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
+      <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_420px]">
         <div className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             {metrics.map((m) => (
