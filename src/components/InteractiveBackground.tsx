@@ -59,6 +59,8 @@ export default function InteractiveBackground() {
   const starsRef = useRef<Star[]>([]);
   const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
   const pointerRef = useRef({ x: 0.5, y: 0.35 });
+  // Cursor trail for a soft glow field that lingers briefly behind movement.
+  const pointerTrailRef = useRef<Array<{ x: number; y: number; t: number }>>([]);
   const redrawPendingRef = useRef(false);
   const lastNowRef = useRef<number | null>(null);
 
@@ -141,8 +143,22 @@ export default function InteractiveBackground() {
       const rect = canvasEl.getBoundingClientRect();
       const nx = (e.clientX - rect.left) / rect.width;
       const ny = (e.clientY - rect.top) / rect.height;
-      pointerRef.current.x = clamp(nx, 0, 1);
-      pointerRef.current.y = clamp(ny, 0, 1);
+      const x = clamp(nx, 0, 1);
+      const y = clamp(ny, 0, 1);
+      pointerRef.current.x = x;
+      pointerRef.current.y = y;
+
+      // Record a short trail so the glow follows cursor movement with decay.
+      // Keep it small (perf) and short-lived (readability).
+      const t = performance.now();
+      const trail = pointerTrailRef.current;
+      trail.push({ x, y, t });
+      // Trim: cap points and age.
+      const maxPoints = 14;
+      const maxAgeMs = 750;
+      while (trail.length > maxPoints) trail.shift();
+      while (trail.length && t - trail[0].t > maxAgeMs) trail.shift();
+
       requestRedraw();
     }
 
@@ -172,6 +188,13 @@ export default function InteractiveBackground() {
       // Slightly wider influence so the “ultra bright” response reads without moving stars.
       const glowRadius = clamp(Math.min(w, h) * 0.28, 170, 420);
 
+      // Soft trailing glow field: recent cursor positions add a gentle lingering boost.
+      const trailNow = performance.now();
+      const trail = pointerTrailRef.current;
+      // Prune by age each frame to ensure decay even if pointer stops.
+      const maxAgeMs = 750;
+      while (trail.length && trailNow - trail[0].t > maxAgeMs) trail.shift();
+
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
 
@@ -185,7 +208,31 @@ export default function InteractiveBackground() {
         const dx = s.x - px;
         const dy = s.y - py;
         const dist = Math.hypot(dx, dy);
-        const glowTarget = glowFalloff(dist, glowRadius);
+        const directGlow = glowFalloff(dist, glowRadius);
+
+        // Combine direct + trail influences using a saturating blend (avoids overblown blobs).
+        // Trail weights decay exponentially with age, creating a smooth fade-out.
+        let trailGlow = 0;
+        if (trail.length) {
+          // Saturating accumulator: g = 1 - Π(1 - contrib)
+          let inv = 1;
+          for (let j = trail.length - 1; j >= 0; j--) {
+            const p = trail[j];
+            const age = (trailNow - p.t) / 1000;
+            const wgt = Math.exp(-age * 3.6); // ~0.03 at ~1s
+            if (wgt < 0.01) continue;
+            const tx = p.x * w;
+            const ty = p.y * h;
+            const td = Math.hypot(s.x - tx, s.y - ty);
+            const contrib = glowFalloff(td, glowRadius * 0.95) * wgt * 0.95;
+            inv *= 1 - clamp(contrib, 0, 0.98);
+            // Early exit if already near max.
+            if (inv < 0.08) break;
+          }
+          trailGlow = 1 - inv;
+        }
+
+        const glowTarget = clamp(Math.max(directGlow, trailGlow * 1.12), 0, 1);
 
         // Hover flare should be "alive" but not instant: fast rise, slower fade.
         const k = glowTarget > s.hf ? 14 : 5;
@@ -193,15 +240,16 @@ export default function InteractiveBackground() {
         s.hf = s.hf + (glowTarget - s.hf) * a;
 
         // Elegant “light up” near cursor; no positional shift/parallax.
-        const boost = 1 + s.hf * 5.6;
+        const boost = 1 + s.hf * 6.9;
         const alpha = clamp(s.a * twinkle * boost, 0, 1);
         context.globalAlpha = alpha;
 
         // Stronger local halo (only near cursor / on bright stars). No full-canvas glow.
         const halo = Math.max(s.hf, s.bright ? 0.14 : 0);
-        if (halo > 0.06) {
+        if (halo > 0.055) {
           context.shadowColor = 'rgba(255,255,255,0.98)';
-          context.shadowBlur = (24 + 26 * s.hf) * halo;
+          // Slightly stronger blur to sell the “brighter” impression, still strictly local.
+          context.shadowBlur = (28 + 34 * s.hf) * halo;
         } else {
           context.shadowBlur = 0;
         }
@@ -257,6 +305,7 @@ export default function InteractiveBackground() {
       if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
       lastNowRef.current = null;
+      pointerTrailRef.current = [];
     };
   }, [reduceMotion]);
 
