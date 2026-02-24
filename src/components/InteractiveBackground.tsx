@@ -113,12 +113,12 @@ export default function InteractiveBackground() {
           inner: outer * innerRatio,
           points,
           rot: Math.random() * Math.PI * 2,
-          // Brighter base field for strong presence; kept tasteful with vignette.
-          a: (isBright ? 0.78 : 0.56) + Math.random() * (isBright ? 0.20 : 0.26),
+          // Ultra-bright base field. Kept readable by avoiding any large-area haze.
+          a: (isBright ? 0.90 : 0.70) + Math.random() * (isBright ? 0.10 : 0.22),
           // A mix of twinkle rates; slightly slower for larger stars.
-          tw: 0.42 + Math.random() * 1.45 - baseR * 0.08,
+          tw: 0.40 + Math.random() * 1.55 - baseR * 0.08,
           // Stronger twinkle amplitude with higher peaks.
-          twA: (isBright ? 0.75 : 0.48) + Math.random() * (isBright ? 0.18 : 0.22),
+          twA: (isBright ? 0.95 : 0.62) + Math.random() * (isBright ? 0.20 : 0.26),
           ph: Math.random() * Math.PI * 2,
           hf: 0,
           bright: isBright,
@@ -169,7 +169,8 @@ export default function InteractiveBackground() {
       // Cursor glow: stars brighten near the pointer (no positional shift/parallax).
       const px = pointerRef.current.x * w;
       const py = pointerRef.current.y * h;
-      const glowRadius = clamp(Math.min(w, h) * 0.22, 140, 320);
+      // Slightly wider influence so the “ultra bright” response reads without moving stars.
+      const glowRadius = clamp(Math.min(w, h) * 0.28, 170, 420);
 
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
@@ -177,8 +178,9 @@ export default function InteractiveBackground() {
         // Smooth twinkle with brighter peaks (sinusoidal -> peaky eased pulse).
         const phase = now * s.tw + s.ph;
         const pulse01 = motionEnabled ? (Math.sin(phase) + 1) / 2 : 1;
-        const easedPulse = 0.12 + 0.88 * Math.pow(pulse01, 3.1);
-        const twinkle = motionEnabled ? 0.35 + (1.05 + 1.15 * s.twA) * easedPulse : 1;
+        const easedPulse = 0.10 + 0.90 * Math.pow(pulse01, 3.05);
+        // Higher floor + brighter peaks.
+        const twinkle = motionEnabled ? 0.55 + (1.20 + 1.35 * s.twA) * easedPulse : 1;
 
         const dx = s.x - px;
         const dy = s.y - py;
@@ -191,15 +193,15 @@ export default function InteractiveBackground() {
         s.hf = s.hf + (glowTarget - s.hf) * a;
 
         // Elegant “light up” near cursor; no positional shift/parallax.
-        const boost = 1 + s.hf * 3.4;
+        const boost = 1 + s.hf * 5.6;
         const alpha = clamp(s.a * twinkle * boost, 0, 1);
         context.globalAlpha = alpha;
 
-        // Subtle halo only for brighter/hovered stars (keeps perf predictable).
-        const halo = Math.max(s.hf, s.bright ? 0.10 : 0);
-        if (halo > 0.10) {
-          context.shadowColor = 'rgba(255,255,255,0.95)';
-          context.shadowBlur = 18 * halo;
+        // Stronger local halo (only near cursor / on bright stars). No full-canvas glow.
+        const halo = Math.max(s.hf, s.bright ? 0.14 : 0);
+        if (halo > 0.06) {
+          context.shadowColor = 'rgba(255,255,255,0.98)';
+          context.shadowBlur = (24 + 26 * s.hf) * halo;
         } else {
           context.shadowBlur = 0;
         }
@@ -212,11 +214,11 @@ export default function InteractiveBackground() {
         context.fill();
 
         // Tiny bright core helps the shape read at small sizes.
-        if (outer > 1.15) {
+        if (outer > 1.05) {
           context.shadowBlur = 0;
-          context.globalAlpha = clamp(alpha * 0.85 + 0.12, 0, 1);
+          context.globalAlpha = clamp(alpha * 0.92 + 0.16, 0, 1);
           context.beginPath();
-          context.arc(s.x, s.y, Math.max(0.45, outer * 0.16), 0, Math.PI * 2);
+          context.arc(s.x, s.y, Math.max(0.5, outer * 0.18), 0, Math.PI * 2);
           context.fill();
         }
       }
@@ -261,8 +263,8 @@ export default function InteractiveBackground() {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
       <canvas ref={canvasRef} className="h-full w-full opacity-100" />
-      {/* Extra soft vignette for readability */}
-      <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_50%_0%,rgba(0,0,0,0.0),rgba(0,0,0,0.62))]" />
+      {/* Minimal vignette for readability (avoid non-star haze). */}
+      <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_50%_0%,rgba(0,0,0,0.0),rgba(0,0,0,0.54))]" />
     </div>
   );
 }
