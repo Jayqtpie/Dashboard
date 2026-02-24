@@ -10,6 +10,8 @@ type Star = {
   tw: number; // twinkle speed
   twA: number; // twinkle amount
   ph: number; // phase
+  hf: number; // hover flare state (0..1), eased over time
+  bright: boolean;
 };
 
 function clamp(n: number, min: number, max: number) {
@@ -31,6 +33,7 @@ export default function InteractiveBackground() {
   const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
   const pointerRef = useRef({ x: 0.5, y: 0.35 });
   const redrawPendingRef = useRef(false);
+  const lastNowRef = useRef<number | null>(null);
 
   const reduceMotion = useMemo(() => {
     if (typeof window === 'undefined') return true;
@@ -67,18 +70,21 @@ export default function InteractiveBackground() {
 
       const next: Star[] = [];
       for (let i = 0; i < targetCount; i++) {
-        const r = 0.55 + Math.random() * 2.05;
-        const isBright = Math.random() < 0.16;
+        const r = 0.6 + Math.random() * 2.25;
+        const isBright = Math.random() < 0.2;
         next.push({
           x: Math.random() * rect.width,
           y: Math.random() * rect.height,
-          r: isBright ? r * 1.1 : r,
-          a: (isBright ? 0.52 : 0.34) + Math.random() * (isBright ? 0.38 : 0.42),
+          r: isBright ? r * 1.15 : r,
+          // Brighter base field for stronger contrast (kept under 1 once twinkle/hover applies)
+          a: (isBright ? 0.62 : 0.42) + Math.random() * (isBright ? 0.30 : 0.34),
           // a mix of twinkle rates; slightly slower for larger stars
-          tw: 0.55 + Math.random() * 1.35 - r * 0.10,
-          // Twinkle amount: brighter stars pulse a bit more, still tasteful.
-          twA: (isBright ? 0.34 : 0.22) + Math.random() * (isBright ? 0.18 : 0.16),
+          tw: 0.45 + Math.random() * 1.5 - r * 0.09,
+          // Stronger twinkle amplitude, still smooth (eased in draw loop)
+          twA: (isBright ? 0.55 : 0.34) + Math.random() * (isBright ? 0.25 : 0.22),
           ph: Math.random() * Math.PI * 2,
+          hf: 0,
+          bright: isBright,
         });
       }
       starsRef.current = next;
@@ -105,7 +111,7 @@ export default function InteractiveBackground() {
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
 
-    const star = 'rgba(250, 240, 230, 1)';
+    const star = 'rgba(255, 252, 248, 1)';
 
     function draw(nowMs: number) {
       const { w, h } = sizeRef.current;
@@ -114,35 +120,60 @@ export default function InteractiveBackground() {
       const now = nowMs / 1000;
       const stars = starsRef.current;
 
+      const last = lastNowRef.current;
+      const dt = last == null ? 1 / 60 : clamp(now - last, 0, 0.05);
+      lastNowRef.current = now;
+
       context.clearRect(0, 0, w, h);
 
       // No colored radial glow here (prevents large teal/gold “blob” artifacts).
       // Cursor glow: stars brighten near the pointer (no positional shift/parallax).
       const px = pointerRef.current.x * w;
       const py = pointerRef.current.y * h;
-      const glowRadius = clamp(Math.min(w, h) * 0.20, 110, 260);
+      const glowRadius = clamp(Math.min(w, h) * 0.22, 140, 320);
 
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
 
-        // Twinkle should be visible (brighter peaks), but not glittery.
-        const twinkle = motionEnabled ? 0.78 + s.twA * Math.sin(now * s.tw + s.ph) : 1;
+        // Smooth, pronounced twinkle with gentle easing (sinusoidal -> eased pulse).
+        const phase = now * s.tw + s.ph;
+        const pulse01 = motionEnabled ? (Math.sin(phase) + 1) / 2 : 1;
+        const easedPulse = 0.15 + 0.85 * Math.pow(pulse01, 2.2);
+        const twinkle = motionEnabled ? 0.22 + (0.95 + 0.85 * s.twA) * easedPulse : 1;
 
         const dx = s.x - px;
         const dy = s.y - py;
         const dist = Math.hypot(dx, dy);
-        const glow = glowFalloff(dist, glowRadius);
+        const glowTarget = glowFalloff(dist, glowRadius);
+
+        // Hover flare should be "alive" but not instant: fast rise, slower fade.
+        const k = glowTarget > s.hf ? 14 : 5;
+        const a = 1 - Math.exp(-dt * k);
+        s.hf = s.hf + (glowTarget - s.hf) * a;
 
         // Elegant “light up” near cursor; no positional shift/parallax.
-        const boost = 1 + glow * 1.55;
-        context.globalAlpha = clamp(s.a * twinkle * boost, 0, 1);
+        const boost = 1 + s.hf * 2.8;
+        const alpha = clamp(s.a * twinkle * boost, 0, 1);
+        context.globalAlpha = alpha;
+
+        // Subtle halo only for brighter/hovered stars (keeps perf predictable).
+        const halo = Math.max(s.hf, s.bright ? 0.08 : 0);
+        if (halo > 0.12) {
+          context.shadowColor = 'rgba(255,255,255,0.9)';
+          context.shadowBlur = 14 * halo;
+        } else {
+          context.shadowBlur = 0;
+        }
+
+        const r = s.r * (1 + s.hf * 0.55);
 
         context.fillStyle = star;
         context.beginPath();
-        context.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        context.arc(s.x, s.y, r, 0, Math.PI * 2);
         context.fill();
       }
 
+      context.shadowBlur = 0;
       context.globalAlpha = 1;
     }
 
@@ -175,12 +206,13 @@ export default function InteractiveBackground() {
       ro.disconnect();
       if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
+      lastNowRef.current = null;
     };
   }, [reduceMotion]);
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
-      <canvas ref={canvasRef} className="h-full w-full opacity-90" />
+      <canvas ref={canvasRef} className="h-full w-full opacity-100" />
       {/* Extra soft vignette for readability */}
       <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_50%_0%,rgba(0,0,0,0.0),rgba(0,0,0,0.62))]" />
     </div>
