@@ -116,7 +116,7 @@ export default function GrowthPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
         <div className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
             {metrics.map((m) => (
@@ -150,7 +150,7 @@ export default function GrowthPage() {
             ))}
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <Card title="Top Hooks" subtitle="Short list of proven openings (keep it sharp).">
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -208,7 +208,7 @@ export default function GrowthPage() {
             </Card>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card title="Do More" subtitle="Double down on what’s working.">
               <ul className="space-y-2">
                 {byKind.do_more.map((n) => (
