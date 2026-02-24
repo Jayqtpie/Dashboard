@@ -30,28 +30,31 @@ export default function Shell({ children }: { children: ReactNode }) {
           {/* Sidebar (desktop) */}
           <aside className="hidden lg:block">
             <div className="sticky top-6">
-              <div className="glass card-edge rounded-3xl p-6 shadow-[var(--shadow-card)]">
-                <div className="text-[11px] tracking-[0.38em] text-[var(--muted)]">
-                  GUIDEDBARAKAH
-                </div>
-                <div className="mt-2 flex items-center justify-between gap-3">
-                  <div className="text-xl font-semibold leading-7 tracking-tight">Command Center</div>
-                  <span className="rounded-full border border-[var(--border)] bg-white/5 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-[var(--gb-gold)]">
+              <div className="glass card-edge flex max-h-[calc(100vh-3rem)] flex-col overflow-hidden rounded-3xl p-5 shadow-[var(--shadow-card)] lg:[@media(max-height:800px)]:p-4">
+                <div className="text-[11px] tracking-[0.38em] text-[var(--muted)]">GUIDEDBARAKAH</div>
+
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <div className="min-w-0 text-xl font-semibold leading-7 tracking-tight">
+                    Command Center
+                  </div>
+                  <span className="shrink-0 rounded-full border border-[var(--border)] bg-white/5 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-[var(--gb-gold)]">
                     MVP
                   </span>
                 </div>
 
-                <div className="mt-5 space-y-2">
-                  {tabs.map((t) => (
-                    <NavLink key={t.href} href={t.href} label={t.label} active={pathname === t.href} />
-                  ))}
+                <div className="mt-4 min-h-0 flex-1 overflow-y-auto pr-1 lg:[@media(max-height:800px)]:mt-3">
+                  <div className="space-y-2">
+                    {tabs.map((t) => (
+                      <NavLink key={t.href} href={t.href} label={t.label} active={pathname === t.href} />
+                    ))}
+                  </div>
                 </div>
 
-                <div className="mt-6 rounded-2xl border border-[var(--border)] bg-black/25 p-4">
+                <div className="mt-4 shrink-0 rounded-2xl border border-[var(--border)] bg-black/25 p-4 lg:[@media(max-height:800px)]:mt-3 lg:[@media(max-height:800px)]:p-3">
                   <div className="text-xs text-[var(--muted)]">Local-first</div>
-                  <div className="mt-1 text-sm text-[var(--gb-cream)]">
+                  <div className="mt-1 text-sm leading-6 text-[var(--gb-cream)]">
                     Data lives in{' '}
-                    <code className="rounded-lg border border-[var(--border)] bg-white/5 px-1.5 py-0.5 text-xs">
+                    <code className="break-words rounded-lg border border-[var(--border)] bg-white/5 px-1.5 py-0.5 text-xs">
                       data/guidedbarakah.sqlite
                     </code>
                   </div>
