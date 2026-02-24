@@ -25,8 +25,8 @@ export default function Shell({ children }: { children: ReactNode }) {
 
       <InteractiveBackground />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-10">
+      <div className="relative z-10 mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-8">
           {/* Sidebar (desktop) */}
           <aside className="hidden lg:block">
             <div className="sticky top-6">
