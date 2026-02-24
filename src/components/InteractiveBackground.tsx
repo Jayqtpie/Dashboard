@@ -201,7 +201,7 @@ export default function InteractiveBackground() {
   }, [reduceMotion]);
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
       <canvas ref={canvasRef} className="h-full w-full opacity-75" />
       {/* Extra soft vignette for readability */}
       <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_50%_0%,rgba(0,0,0,0.0),rgba(0,0,0,0.62))]" />

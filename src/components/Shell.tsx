@@ -15,7 +15,7 @@ export default function Shell({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="relative isolate min-h-screen">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-black/80 focus:px-3 focus:py-2 focus:text-sm focus:text-[var(--gb-cream)] focus:ring-2 focus:ring-[var(--gb-gold)]/60"
@@ -25,7 +25,7 @@ export default function Shell({ children }: { children: ReactNode }) {
 
       <InteractiveBackground />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-10">
           {/* Sidebar (desktop) */}
           <aside className="hidden lg:block">
