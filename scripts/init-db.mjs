@@ -84,6 +84,61 @@ CREATE TABLE IF NOT EXISTS ops_alerts (
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   resolved INTEGER NOT NULL DEFAULT 0
 );
+
+-- Instagram Graph integration
+CREATE TABLE IF NOT EXISTS ig_accounts (
+  ig_user_id TEXT PRIMARY KEY,
+  username TEXT,
+  name TEXT,
+  profile_picture_url TEXT,
+  followers_count INTEGER,
+  media_count INTEGER,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS ig_media (
+  id TEXT PRIMARY KEY,
+  ig_user_id TEXT NOT NULL,
+  caption TEXT,
+  media_type TEXT,
+  media_url TEXT,
+  permalink TEXT,
+  thumbnail_url TEXT,
+  timestamp TEXT,
+  like_count INTEGER,
+  comments_count INTEGER,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_ig_media_user_time ON ig_media (ig_user_id, timestamp);
+
+CREATE TABLE IF NOT EXISTS ig_media_insights (
+  media_id TEXT NOT NULL,
+  metric TEXT NOT NULL,
+  date TEXT NOT NULL, -- YYYY-MM-DD
+  value REAL NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (media_id, metric, date)
+);
+CREATE INDEX IF NOT EXISTS idx_ig_media_insights_metric_date ON ig_media_insights (metric, date);
+
+CREATE TABLE IF NOT EXISTS ig_daily_account_insights (
+  ig_user_id TEXT NOT NULL,
+  metric TEXT NOT NULL,
+  date TEXT NOT NULL, -- YYYY-MM-DD
+  value REAL NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (ig_user_id, metric, date)
+);
+CREATE INDEX IF NOT EXISTS idx_ig_daily_account_insights_metric_date ON ig_daily_account_insights (metric, date);
+
+CREATE TABLE IF NOT EXISTS ig_sync_runs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  started_at TEXT NOT NULL DEFAULT (datetime('now')),
+  finished_at TEXT,
+  status TEXT NOT NULL, -- running | success | error
+  error_message TEXT,
+  meta TEXT
+);
 `);
 
 const hasChecklist = db.prepare('SELECT COUNT(*) as c FROM checklist_items').get().c;

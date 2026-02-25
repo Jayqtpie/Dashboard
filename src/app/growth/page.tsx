@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import InstagramStatsInput from '@/components/instagram-stats-input';
 import { Button, Card, TextArea, TextInput } from '@/components/ui';
 
 type GrowthMetric = {
@@ -118,6 +119,8 @@ export default function GrowthPage() {
 
       <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_420px]">
         <div className="space-y-6">
+          <InstagramStatsInput />
+
           <div className="grid gap-6 md:grid-cols-2">
             {metrics.map((m) => (
               <Card
