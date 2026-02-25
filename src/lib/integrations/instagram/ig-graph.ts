@@ -90,7 +90,7 @@ export async function graphGetAllPages<T>(path: string, params: Record<string, s
   const out: T[] = [];
 
   for (let i = 0; i < 20; i++) {
-    const page = nextUrl
+    const page: GraphPage<T> = nextUrl
       ? await (async () => {
           // When paging.next is present, it already contains access_token.
           const res = await fetch(nextUrl, { cache: 'no-store' });
