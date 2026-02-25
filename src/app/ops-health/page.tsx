@@ -26,7 +26,7 @@ function badge(sev: string) {
   return `${base} border-sky-500/40 bg-sky-500/15 text-sky-100`;
 }
 
-export default function SystemStatusPage() {
+export default function OperationsPage() {
   const [rollup, setRollup] = useState<Rollup | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
 
@@ -104,8 +104,8 @@ export default function SystemStatusPage() {
   return (
     <div className="space-y-6 sm:space-y-7">
       <PageHeader
-        eyebrow="SYSTEM STATUS"
-        title="Keep operations calm and predictable"
+        eyebrow="OPERATIONS"
+        title="Keep business operations calm and predictable"
         description="Track delivery reliability and automations, then log incidents as soon as something drifts."
         right={
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-3">
@@ -184,7 +184,7 @@ export default function SystemStatusPage() {
                     className={`rounded-2xl border px-3 py-2 text-sm font-semibold uppercase transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${
                       newSev === s
                         ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]'
-                        : 'border-transparent bg-black/20 text-[var(--muted)] hover:bg-white/5'
+                        : 'border-transparent bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'
                     }`}
                     onClick={() => setNewSev(s)}
                   >

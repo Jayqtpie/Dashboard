@@ -230,7 +230,7 @@ export default function TodayPage() {
                   className={`rounded-2xl border px-3 py-2 text-xs font-semibold tracking-wide transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${
                     k.active
                       ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]'
-                      : 'border-transparent bg-black/20 text-[var(--muted)] hover:bg-white/5'
+                      : 'border-transparent bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'
                   }`}
                   onClick={async () => {
                     const res = await fetch('/api/cta-keywords', {
@@ -261,7 +261,7 @@ export default function TodayPage() {
                   activeKeywords.map((k) => (
                     <span
                       key={k}
-                      className="rounded-full border border-[var(--border)] bg-white/5 px-3 py-1 text-xs font-semibold tracking-wide text-[var(--foreground)]"
+                      className="rounded-full border border-[var(--border)] bg-[var(--chip-bg)] px-3 py-1 text-xs font-semibold tracking-wide text-[var(--foreground)]"
                     >
                       {k}
                     </span>
@@ -281,7 +281,7 @@ export default function TodayPage() {
             {items.map((it) => (
               <label
                 key={it.id}
-                className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 transition hover:bg-black/30"
+                className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 transition hover:bg-[var(--interactive-soft)]"
               >
                 <input
                   type="checkbox"

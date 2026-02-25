@@ -1,16 +1,42 @@
 'use client';
 
+import { useEffect, useState, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { NavLink } from '@/components/ui';
-import { ReactNode } from 'react';
+import { Button, NavLink } from '@/components/ui';
+
+type ThemeMode = 'light' | 'dark';
 
 export default function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const [theme, setTheme] = useState<ThemeMode>(() => {
+    if (typeof document === 'undefined') return 'light';
+    const current = document.documentElement.getAttribute('data-theme');
+    if (current === 'dark' || current === 'light') return current;
+
+    try {
+      const saved = localStorage.getItem('gb-theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+    } catch {}
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+      localStorage.setItem('gb-theme', theme);
+    } catch {}
+  }, [theme]);
+
+  function toggleTheme() {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  }
+
   const tabs = [
     { href: '/today', label: 'Today' },
     { href: '/growth', label: 'Growth' },
     { href: '/funnel', label: 'Funnel' },
-    { href: '/ops-health', label: 'System Status' },
+    { href: '/ops-health', label: 'Operations' },
   ];
 
   return (
@@ -23,7 +49,7 @@ export default function Shell({ children }: { children: ReactNode }) {
       </a>
 
       <div className="mx-auto w-full max-w-[1560px] px-4 pb-10 pt-4 sm:px-6 lg:px-8">
-        <header className="rounded-[28px] border border-[var(--border)] bg-white p-4 shadow-[var(--shadow-card)] sm:p-6">
+        <header className="theme-fade rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-card)] sm:p-6">
           <div className="flex flex-col gap-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
@@ -33,13 +59,16 @@ export default function Shell({ children }: { children: ReactNode }) {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold tracking-wide text-indigo-700">
+                <span className="rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1 text-xs font-semibold tracking-wide text-[var(--muted-strong)]">
                   UI v2
                 </span>
+                <Button variant="outline" onClick={toggleTheme}>
+                  {theme === 'dark' ? 'Light' : 'Dark'} mode
+                </Button>
               </div>
             </div>
 
-            <nav className="hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-2 md:block">
+            <nav className="theme-fade hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-2 md:block">
               <div className="grid grid-cols-4 gap-2">
                 {tabs.map((t) => (
                   <NavLink key={t.href} href={t.href} label={t.label} active={pathname === t.href} />
@@ -62,7 +91,7 @@ export default function Shell({ children }: { children: ReactNode }) {
 
           <aside className="hidden xl:block">
             <div className="sticky top-6 space-y-4">
-              <section className="rounded-3xl border border-[var(--border)] bg-white p-5 shadow-[var(--shadow-card)]">
+              <section className="theme-fade rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-card)]">
                 <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">Workspace</div>
                 <div className="mt-2 text-lg font-semibold text-[var(--foreground)]">Local-first data</div>
                 <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
@@ -73,7 +102,7 @@ export default function Shell({ children }: { children: ReactNode }) {
                 </code>
               </section>
 
-              <section className="rounded-3xl border border-[var(--border)] bg-[linear-gradient(145deg,#1e3a8a,#7c3aed)] p-5 text-white shadow-[var(--shadow-card)]">
+              <section className="theme-fade rounded-3xl border border-[var(--border)] bg-[linear-gradient(145deg,var(--shell-release-from),var(--shell-release-to))] p-5 text-white shadow-[var(--shadow-card)]">
                 <div className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-100">Release</div>
                 <div className="mt-2 text-2xl font-semibold">UI v2</div>
                 <p className="mt-2 text-sm text-indigo-100">Hard refresh layout with a productized SaaS visual system.</p>

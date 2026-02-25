@@ -44,7 +44,7 @@ export function PageHeader({
   right?: ReactNode;
 }) {
   return (
-    <section className="rounded-[28px] border border-[var(--border)] bg-[linear-gradient(135deg,#ffffff_0%,#f2f8ff_100%)] p-6 shadow-[var(--shadow-card)] sm:p-8">
+    <section className="theme-fade rounded-[28px] border border-[var(--border)] bg-[linear-gradient(135deg,var(--header-grad-from)_0%,var(--header-grad-to)_100%)] p-6 shadow-[var(--shadow-card)] sm:p-8">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div className="min-w-0 max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">{eyebrow}</div>
@@ -78,8 +78,8 @@ export function Button({
   const styles: Record<string, string> = {
     primary:
       'bg-[linear-gradient(135deg,var(--gb-indigo)_0%,var(--gb-violet)_100%)] text-white shadow-[0_8px_24px_rgba(30,58,138,0.28)] hover:brightness-110',
-    ghost: 'bg-transparent text-[var(--foreground)] hover:bg-slate-100',
-    outline: 'border border-[var(--border)] bg-white text-[var(--foreground)] hover:bg-slate-50',
+    ghost: 'bg-transparent text-[var(--foreground)] hover:bg-[var(--interactive-soft)]',
+    outline: 'border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] hover:bg-[var(--surface-soft)]',
   };
 
   return (
@@ -102,7 +102,7 @@ export function TextInput({
 }) {
   return (
     <input
-      className="w-full rounded-xl border border-[var(--border)] bg-white px-3.5 py-2.5 text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-cyan)]/50"
+      className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2.5 text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-cyan)]/50"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
@@ -122,7 +122,7 @@ export function TextArea({
 }) {
   return (
     <textarea
-      className="min-h-28 w-full rounded-xl border border-[var(--border)] bg-white px-3.5 py-2.5 text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-cyan)]/50"
+      className="min-h-28 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2.5 text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-cyan)]/50"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
@@ -144,13 +144,13 @@ export function NavLink({
       href={href}
       className={`group flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-cyan)]/55 ${
         active
-          ? 'bg-[linear-gradient(135deg,#dbeafe_0%,#ede9fe_100%)] text-[var(--foreground)] shadow-[inset_0_0_0_1px_rgba(30,58,138,0.16)]'
-          : 'text-[var(--muted-strong)] hover:bg-white'
+          ? 'bg-[linear-gradient(135deg,color-mix(in_srgb,var(--surface-soft)_78%,#8b5cf6_22%)_0%,color-mix(in_srgb,var(--surface-soft)_80%,#38bdf8_20%)_100%)] text-[var(--foreground)] shadow-[inset_0_0_0_1px_rgba(99,102,241,0.28)]'
+          : 'text-[var(--muted-strong)] hover:bg-[var(--surface)]'
       }`}
     >
       <span
         className={`h-2 w-2 rounded-full transition ${
-          active ? 'bg-[var(--gb-violet)] shadow-[0_0_0_4px_rgba(124,58,237,0.15)]' : 'bg-slate-300 group-hover:bg-slate-400'
+          active ? 'bg-[var(--gb-violet)] shadow-[0_0_0_4px_rgba(124,58,237,0.2)]' : 'bg-[var(--border)] group-hover:bg-[var(--muted)]'
         }`}
       />
       <span className="truncate">{label}</span>

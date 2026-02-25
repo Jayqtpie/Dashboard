@@ -168,7 +168,7 @@ export default function InstagramStatsInput() {
               {[...entries].reverse().map((entry) => (
                 <div
                   key={`${entry.timestamp}-${entry.followers}-${entry.engagement}`}
-                  className="rounded-xl border border-[var(--border)] bg-black/25 px-3 py-2 text-sm"
+                  className="rounded-xl border border-[var(--border)] bg-[var(--chip-bg)] px-3 py-2 text-sm"
                 >
                   <div className="text-xs text-[var(--muted)]">{new Date(entry.timestamp).toLocaleString()}</div>
                   <div className="mt-1">

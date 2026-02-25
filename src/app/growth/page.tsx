@@ -210,38 +210,35 @@ export default function GrowthPage() {
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-            <Card title="Do More" subtitle="Double down on what is working.">
-              <ul className="space-y-2">
-                {byKind.do_more.map((n) => (
-                  <li key={n.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm leading-6">
-                    {n.text}
-                  </li>
-                ))}
-                {!byKind.do_more.length && <li className="text-sm text-[var(--muted)]">—</li>}
-              </ul>
-            </Card>
-            <Card title="Stop" subtitle="Remove drag and protect focus.">
-              <ul className="space-y-2">
-                {byKind.stop.map((n) => (
-                  <li key={n.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm leading-6">
-                    {n.text}
-                  </li>
-                ))}
-                {!byKind.stop.length && <li className="text-sm text-[var(--muted)]">—</li>}
-              </ul>
-            </Card>
-            <Card title="Test" subtitle="Small experiments, fast feedback.">
-              <ul className="space-y-2">
-                {byKind.test.map((n) => (
-                  <li key={n.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm leading-6">
-                    {n.text}
-                  </li>
-                ))}
-                {!byKind.test.length && <li className="text-sm text-[var(--muted)]">—</li>}
-              </ul>
-            </Card>
-          </div>
+          <Card
+            title="Decisions board"
+            subtitle="Keep actions grouped so weekly review stays crisp and readable."
+            className="space-y-0"
+          >
+            <div className="grid gap-4 xl:grid-cols-3">
+              {([
+                { key: 'do_more', title: 'Do More', subtitle: 'Double down on what is compounding.' },
+                { key: 'stop', title: 'Stop', subtitle: 'Remove drag and protect focus.' },
+                { key: 'test', title: 'Test', subtitle: 'Run one small experiment at a time.' },
+              ] as const).map((section) => {
+                const items = byKind[section.key];
+                return (
+                  <section key={section.key} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 sm:p-5">
+                    <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">{section.title}</div>
+                    <p className="mt-1 text-xs leading-5 text-[var(--muted)]">{section.subtitle}</p>
+                    <ul className="mt-4 space-y-2.5">
+                      {items.map((n) => (
+                        <li key={n.id} className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-3 text-sm leading-5 text-[var(--muted-strong)]">
+                          {n.text}
+                        </li>
+                      ))}
+                      {!items.length && <li className="rounded-xl border border-dashed border-[var(--border)] px-3.5 py-3 text-sm text-[var(--muted)]">No notes yet.</li>}
+                    </ul>
+                  </section>
+                );
+              })}
+            </div>
+          </Card>
         </div>
 
         <div className="space-y-6">
@@ -257,7 +254,7 @@ export default function GrowthPage() {
                       className={`rounded-2xl border px-3 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${
                         newNoteKind === k
                           ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]'
-                          : 'border-transparent bg-black/20 text-[var(--muted)] hover:bg-white/5'
+                          : 'border-transparent bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'
                       }`}
                     >
                       {kindLabel(k)}

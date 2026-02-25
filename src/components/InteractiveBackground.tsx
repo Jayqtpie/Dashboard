@@ -95,7 +95,7 @@ export default function InteractiveBackground() {
       // Density scales with area, capped for performance.
       // Goal: noticeably denser and more present, while keeping perf predictable.
       const area = rect.width * rect.height;
-      const targetCount = Math.round(clamp(area / 9000, 90, 260));
+      const targetCount = Math.round(clamp(area / 11000, 72, 180));
 
       const next: Star[] = [];
       for (let i = 0; i < targetCount; i++) {
@@ -240,7 +240,7 @@ export default function InteractiveBackground() {
         s.hf = s.hf + (glowTarget - s.hf) * a;
 
         // Elegant “light up” near cursor; no positional shift/parallax.
-        const boost = 1 + s.hf * 6.9;
+        const boost = 1 + s.hf * 4.2;
         const alpha = clamp(s.a * twinkle * boost, 0, 1);
         context.globalAlpha = alpha;
 
@@ -310,10 +310,10 @@ export default function InteractiveBackground() {
   }, [reduceMotion]);
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
-      <canvas ref={canvasRef} className="h-full w-full opacity-100" />
+    <div aria-hidden="true" className="starfield-layer pointer-events-none fixed inset-0 z-0">
+      <canvas ref={canvasRef} className="h-full w-full opacity-70" />
       {/* Minimal vignette for readability (avoid non-star haze). */}
-      <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_50%_0%,rgba(0,0,0,0.0),rgba(0,0,0,0.54))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_50%_0%,rgba(0,0,0,0.0),rgba(0,0,0,0.52))]" />
     </div>
   );
 }
