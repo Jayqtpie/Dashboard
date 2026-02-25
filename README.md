@@ -1,6 +1,6 @@
 # GuidedBarakah — Command Center (MVP)
 
-Local-first web dashboard for daily execution + growth tracking + funnel monitoring + ops health.
+Local-first web dashboard for daily execution + growth tracking + funnel monitoring + system status visibility.
 
 **Brand palette**
 - Teal: `#1A535C`
@@ -45,7 +45,7 @@ Open:
 - `/today` — daily posting checklist, CTA keyword picker, 20-min engagement timer
 - `/growth` — metrics, top hooks/CTAs, do more/stop/test notes
 - `/funnel` — keyword trigger/click/purchase counts + conversion %
-- `/ops-health` — Zapier success/fail, delivery errors, alerts
+- `/ops-health` — System Status: Zapier success/fail, delivery errors, alerts
 
 ## Notes
 - SQLite path can be overridden with `DB_PATH`:

@@ -2,8 +2,6 @@ import { getDb } from '@/lib/db';
 import { getInstagramEnv } from '@/lib/env';
 import { graphGet, graphGetAllPages } from './ig-graph';
 
-type GraphMetricValue = { value: number } | { value: string };
-
 type GraphInsight = {
   name: string;
   period?: string;
@@ -186,7 +184,7 @@ export async function runInstagramSync(): Promise<InstagramSyncResult> {
         for (const ins of insights) {
           for (const v of ins.values ?? []) {
             if (!v.end_time) continue;
-            const value = coerceNumber(v.value as any);
+            const value = coerceNumber(v.value);
             if (value === null) continue;
             const date = toDateOnly(v.end_time);
             upsertAccInsight.run(env.IG_USER_ID, ins.name, date, value);
@@ -248,7 +246,7 @@ export async function runInstagramSync(): Promise<InstagramSyncResult> {
 
         for (const ins of data) {
           for (const v of ins.values ?? []) {
-            const value = coerceNumber(v.value as any);
+            const value = coerceNumber(v.value);
             if (value === null) continue;
             const date = v.end_time ? toDateOnly(v.end_time) : toDateOnly(new Date().toISOString());
             upsertMediaInsight.run(m.id, ins.name, date, value);

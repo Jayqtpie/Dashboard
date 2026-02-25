@@ -12,10 +12,10 @@ export async function GET() {
     .prepare(
       'SELECT keyword, trigger_count, clicks, purchases, updated_at FROM funnel_stats ORDER BY keyword ASC'
     )
-    .all();
+    .all() as Array<{ keyword: string }>;
 
   // Ensure the 4 canonical keywords exist.
-  const existing = new Set(rows.map((r: any) => r.keyword));
+  const existing = new Set(rows.map((r) => r.keyword));
   const insert = db.prepare(
     "INSERT OR IGNORE INTO funnel_stats (keyword, trigger_count, clicks, purchases) VALUES (?, 0, 0, 0)"
   );

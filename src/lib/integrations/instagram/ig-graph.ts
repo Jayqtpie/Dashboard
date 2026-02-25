@@ -64,11 +64,9 @@ export async function graphGet<T>(path: string, params: Record<string, string | 
 
       const json = (await res.json()) as T & GraphError;
 
-      if (!res.ok || (json as any)?.error) {
-        const e = (json as any)?.error;
-        throw new Error(
-          `Instagram Graph API error (${res.status}): ${e?.message ?? res.statusText}`
-        );
+      if (!res.ok || json.error) {
+        const e = json.error;
+        throw new Error(`Instagram Graph API error (${res.status}): ${e?.message ?? res.statusText}`);
       }
 
       return json;
@@ -95,8 +93,8 @@ export async function graphGetAllPages<T>(path: string, params: Record<string, s
           // When paging.next is present, it already contains access_token.
           const res = await fetch(nextUrl, { cache: 'no-store' });
           const json = (await res.json()) as GraphPage<T>;
-          if (!res.ok || (json as any)?.error) {
-            const e = (json as any)?.error;
+          if (!res.ok || json.error) {
+            const e = json.error;
             throw new Error(`Instagram Graph API error (${res.status}): ${e?.message ?? res.statusText}`);
           }
           return json;

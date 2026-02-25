@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Card, TextInput } from '@/components/ui';
+import { Button, Card, PageHeader, TextInput } from '@/components/ui';
 
 type Rollup = {
   id: 1;
@@ -21,12 +21,12 @@ type Alert = {
 
 function badge(sev: string) {
   const base = 'inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold border';
-  if (sev === 'critical') return `${base} border-red-500/30 bg-red-500/10 text-red-200`;
-  if (sev === 'warn') return `${base} border-amber-500/30 bg-amber-500/10 text-amber-200`;
-  return `${base} border-sky-500/30 bg-sky-500/10 text-sky-200`;
+  if (sev === 'critical') return `${base} border-red-500/40 bg-red-500/15 text-red-100`;
+  if (sev === 'warn') return `${base} border-amber-500/40 bg-amber-500/15 text-amber-100`;
+  return `${base} border-sky-500/40 bg-sky-500/15 text-sky-100`;
 }
 
-export default function OpsHealthPage() {
+export default function SystemStatusPage() {
   const [rollup, setRollup] = useState<Rollup | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
 
@@ -37,23 +37,26 @@ export default function OpsHealthPage() {
   const [newSev, setNewSev] = useState<'info' | 'warn' | 'critical'>('warn');
   const [newMsg, setNewMsg] = useState('');
 
-  async function load() {
-    const [r, a] = await Promise.all([
-      fetch('/api/ops/rollup').then((x) => x.json()),
-      fetch('/api/ops/alerts').then((x) => x.json()),
-    ]);
-    setRollup(r.rollup);
-    setAlerts(a.alerts);
-
-    if (r.rollup) {
-      setZapierSuccess(String(r.rollup.zapier_success));
-      setZapierFail(String(r.rollup.zapier_fail));
-      setDeliveryErrors(String(r.rollup.delivery_errors));
-    }
-  }
-
   useEffect(() => {
-    load();
+    let cancelled = false;
+
+    Promise.all([fetch('/api/ops/rollup').then((x) => x.json()), fetch('/api/ops/alerts').then((x) => x.json())])
+      .then(([r, a]) => {
+        if (cancelled) return;
+        setRollup(r.rollup);
+        setAlerts(a.alerts);
+
+        if (r.rollup) {
+          setZapierSuccess(String(r.rollup.zapier_success));
+          setZapierFail(String(r.rollup.zapier_fail));
+          setDeliveryErrors(String(r.rollup.delivery_errors));
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const health = useMemo(() => {
@@ -99,40 +102,32 @@ export default function OpsHealthPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="glass card-edge rounded-3xl p-6 shadow-[var(--shadow-card)]">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="min-w-0">
-            <div className="text-[11px] tracking-[0.34em] text-[var(--muted)]">OPS HEALTH</div>
-            <h1 className="mt-2 text-2xl font-semibold leading-8 tracking-tight text-[var(--gb-cream)]">
-              Keep it boring.
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
-              Track delivery and automations, then log alerts the moment something smells off.
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-[var(--border)] bg-black/25 px-4 py-3">
-            <div className="text-xs text-[var(--muted)]">Status</div>
+    <div className="space-y-6 sm:space-y-7">
+      <PageHeader
+        eyebrow="SYSTEM STATUS"
+        title="Keep operations calm and predictable"
+        description="Track delivery reliability and automations, then log incidents as soon as something drifts."
+        right={
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-3">
+            <div className="text-xs text-[var(--muted)]">Current status</div>
             <div className="mt-1 text-xl font-semibold text-[var(--gb-gold)]">{health}</div>
           </div>
-        </div>
-      </div>
+        }
+      />
 
-      {/* Above the fold: metrics */}
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-        <Card title="Delivery errors" subtitle="If this rises, fix immediately.">
-          <div className="glass-strong rounded-3xl border border-[var(--border)]/40 p-5 min-h-[168px] flex flex-col justify-between">
+        <Card title="Delivery errors" subtitle="If this rises, intervene immediately.">
+          <div className="glass-strong flex min-h-[168px] flex-col justify-between rounded-3xl border border-[var(--border)]/40 p-5">
             <div>
-              <div className="text-[11px] tracking-[0.34em] text-[var(--muted)]">ERROR COUNT</div>
+              <div className="text-[11px] tracking-[0.3em] text-[var(--muted)]">ERROR COUNT</div>
               <div className="mt-3 text-5xl font-semibold leading-none tracking-tight">{rollup?.delivery_errors ?? '—'}</div>
-              <div className="mt-3 text-sm leading-6 text-[var(--muted)]">Email / webhook / fulfillment failures.</div>
+              <div className="mt-3 text-sm leading-6 text-[var(--muted)]">Email, webhook, or fulfillment failures.</div>
             </div>
           </div>
         </Card>
 
-        <Card title="Zapier success" subtitle="Recent window">
-          <div className="rounded-3xl border border-[var(--border)] bg-black/20 p-5 min-h-[168px] flex flex-col justify-between">
+        <Card title="Zapier success" subtitle="Recent execution window">
+          <div className="flex min-h-[168px] flex-col justify-between rounded-3xl border border-[var(--border)] bg-[var(--surface-soft)] p-5">
             <div>
               <div className="text-5xl font-semibold leading-none tracking-tight">{rollup?.zapier_success ?? '—'}</div>
               <div className="mt-2 text-sm text-[var(--muted)]">Successful runs</div>
@@ -140,8 +135,8 @@ export default function OpsHealthPage() {
           </div>
         </Card>
 
-        <Card title="Zapier fail" subtitle="Investigate spikes">
-          <div className="rounded-3xl border border-[var(--border)] bg-black/20 p-5 min-h-[168px] flex flex-col justify-between">
+        <Card title="Zapier fail" subtitle="Investigate spikes quickly" className="sm:col-span-2 xl:col-span-1">
+          <div className="flex min-h-[168px] flex-col justify-between rounded-3xl border border-[var(--border)] bg-[var(--surface-soft)] p-5">
             <div>
               <div className="text-5xl font-semibold leading-none tracking-tight">{rollup?.zapier_fail ?? '—'}</div>
               <div className="mt-2 text-sm text-[var(--muted)]">Failed runs</div>
@@ -150,11 +145,10 @@ export default function OpsHealthPage() {
         </Card>
       </div>
 
-      {/* Inputs + quick alert creation */}
-      <div className="grid gap-6 lg:items-start lg:grid-cols-[minmax(0,1fr)_420px]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px] xl:items-start">
         <Card
           title="Rollup inputs"
-          subtitle={rollup?.updated_at ? `Last updated: ${new Date(rollup.updated_at).toLocaleString()}` : 'Update the rollup (MVP manual).'}
+          subtitle={rollup?.updated_at ? `Last updated: ${new Date(rollup.updated_at).toLocaleString()}` : 'Update the manual rollup values.'}
           right={<Button onClick={saveRollup}>Save</Button>}
         >
           <div className="grid gap-4 md:grid-cols-3">
@@ -179,7 +173,7 @@ export default function OpsHealthPage() {
           </div>
         </Card>
 
-        <Card title="Create alert" subtitle="Log incidents fast (MVP manual).">
+        <Card title="Create alert" subtitle="Log incidents quickly.">
           <div className="space-y-4">
             <div>
               <div className="text-xs text-[var(--muted)]">Severity</div>
@@ -187,9 +181,9 @@ export default function OpsHealthPage() {
                 {(['info', 'warn', 'critical'] as const).map((s) => (
                   <button
                     key={s}
-                    className={`rounded-2xl border px-3 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${
+                    className={`rounded-2xl border px-3 py-2 text-sm font-semibold uppercase transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${
                       newSev === s
-                        ? 'border-[var(--border)] bg-white/5 text-[var(--gb-cream)]'
+                        ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]'
                         : 'border-transparent bg-black/20 text-[var(--muted)] hover:bg-white/5'
                     }`}
                     onClick={() => setNewSev(s)}
@@ -210,20 +204,20 @@ export default function OpsHealthPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-[var(--border)] bg-black/20 p-5">
+            <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface-soft)] p-5">
               <div className="text-xs text-[var(--muted)]">Reminder</div>
               <div className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                If delivery errors &gt; 0, pause new campaigns and fix first.
+                If delivery errors &gt; 0, pause new campaigns until the pipeline is stable.
               </div>
             </div>
           </div>
         </Card>
       </div>
 
-      <Card title="Alerts" subtitle="Resolve when fixed. Keep the list short.">
+      <Card title="Alerts" subtitle="Resolve when fixed. Keep this list short.">
         <div className="space-y-2">
           {alerts.map((a) => (
-            <div key={a.id} className="rounded-3xl border border-[var(--border)] bg-black/20 p-5">
+            <div key={a.id} className="rounded-3xl border border-[var(--border)] bg-[var(--surface-soft)] p-5">
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">

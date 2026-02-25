@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import InstagramStatsInput from '@/components/instagram-stats-input';
-import { Button, Card, TextArea, TextInput } from '@/components/ui';
+import { Button, Card, PageHeader, TextArea, TextInput } from '@/components/ui';
 
 type GrowthMetric = {
   key: string;
@@ -44,20 +44,26 @@ export default function GrowthPage() {
   const [newNoteKind, setNewNoteKind] = useState<'do_more' | 'stop' | 'test'>('do_more');
   const [newNote, setNewNote] = useState('');
 
-  async function load() {
-    const [m, l, n] = await Promise.all([
+  useEffect(() => {
+    let cancelled = false;
+
+    Promise.all([
       fetch('/api/growth/metrics').then((r) => r.json()),
       fetch('/api/growth/lists').then((r) => r.json()),
       fetch('/api/growth/notes').then((r) => r.json()),
-    ]);
-    setMetrics(m.metrics);
-    setHooks(l.hooks);
-    setCtas(l.ctas);
-    setNotes(n.notes);
-  }
+    ])
+      .then(([m, l, n]) => {
+        if (cancelled) return;
+        setMetrics(m.metrics);
+        setHooks(l.hooks);
+        setCtas(l.ctas);
+        setNotes(n.notes);
+      })
+      .catch(() => {});
 
-  useEffect(() => {
-    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const byKind = useMemo(() => {
@@ -98,24 +104,17 @@ export default function GrowthPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="glass card-edge rounded-3xl p-6 shadow-[var(--shadow-card)]">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="min-w-0">
-            <div className="text-[11px] tracking-[0.34em] text-[var(--muted)]">GROWTH</div>
-            <h1 className="mt-2 text-2xl font-semibold leading-8 tracking-tight text-[var(--gb-cream)]">
-              Metrics + proven copy, in one place.
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
-              Keep your best hooks/CTAs tight, and capture decisions fast while you’re reviewing performance.
-            </p>
+    <div className="space-y-6 sm:space-y-7">
+      <PageHeader
+        eyebrow="GROWTH"
+        title="Metrics + proven copy, in one place"
+        description="Keep your best hooks and CTAs tight, then capture decisions while reviewing what is working."
+        right={
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-3 text-sm text-[var(--muted)]">
+            Tip: use “Edit” to update metrics quickly.
           </div>
-
-          <div className="rounded-2xl border border-[var(--border)] bg-black/25 px-4 py-3 text-sm text-[var(--muted)]">
-            Tip: click “Edit” on a metric to update quickly.
-          </div>
-        </div>
-      </div>
+        }
+      />
 
       <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_420px]">
         <div className="space-y-6">
@@ -143,7 +142,7 @@ export default function GrowthPage() {
                 }
               >
                 <div className="flex items-end justify-between gap-4">
-                  <div className="text-4xl font-semibold leading-none text-[var(--gb-cream)]">
+                  <div className="text-4xl font-semibold leading-none text-[var(--foreground)]">
                     {m.value}
                     <span className="ml-1 text-sm font-medium text-[var(--muted)]">{m.unit ?? ''}</span>
                   </div>
@@ -153,12 +152,12 @@ export default function GrowthPage() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <Card title="Top Hooks" subtitle="Short list of proven openings (keep it sharp).">
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <Card title="Top Hooks" subtitle="Short list of proven openings.">
               <div className="space-y-4">
                 <div className="space-y-2">
                   {hooks.map((h) => (
-                    <div key={h.id} className="rounded-2xl border border-[var(--border)] bg-black/20 p-4">
+                    <div key={h.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
                       <div className="text-xs text-[var(--muted)]">Score {h.score}/10</div>
                       <div className="mt-2 text-sm leading-6">{h.text}</div>
                     </div>
@@ -166,7 +165,7 @@ export default function GrowthPage() {
                   {!hooks.length && <div className="text-sm text-[var(--muted)]">No hooks yet.</div>}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
                   <TextInput value={newHook} onChange={setNewHook} placeholder="Add a hook…" />
                   <Button
                     onClick={() => {
@@ -186,7 +185,7 @@ export default function GrowthPage() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   {ctas.map((c) => (
-                    <div key={c.id} className="rounded-2xl border border-[var(--border)] bg-black/20 p-4">
+                    <div key={c.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
                       <div className="text-xs text-[var(--muted)]">Score {c.score}/10</div>
                       <div className="mt-2 text-sm leading-6">{c.text}</div>
                     </div>
@@ -194,7 +193,7 @@ export default function GrowthPage() {
                   {!ctas.length && <div className="text-sm text-[var(--muted)]">No CTAs yet.</div>}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
                   <TextInput value={newCta} onChange={setNewCta} placeholder="Add a CTA…" />
                   <Button
                     onClick={() => {
@@ -211,21 +210,21 @@ export default function GrowthPage() {
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Card title="Do More" subtitle="Double down on what’s working.">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <Card title="Do More" subtitle="Double down on what is working.">
               <ul className="space-y-2">
                 {byKind.do_more.map((n) => (
-                  <li key={n.id} className="rounded-2xl border border-[var(--border)] bg-black/20 p-4 text-sm leading-6">
+                  <li key={n.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm leading-6">
                     {n.text}
                   </li>
                 ))}
                 {!byKind.do_more.length && <li className="text-sm text-[var(--muted)]">—</li>}
               </ul>
             </Card>
-            <Card title="Stop" subtitle="Remove drag. Protect focus.">
+            <Card title="Stop" subtitle="Remove drag and protect focus.">
               <ul className="space-y-2">
                 {byKind.stop.map((n) => (
-                  <li key={n.id} className="rounded-2xl border border-[var(--border)] bg-black/20 p-4 text-sm leading-6">
+                  <li key={n.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm leading-6">
                     {n.text}
                   </li>
                 ))}
@@ -235,7 +234,7 @@ export default function GrowthPage() {
             <Card title="Test" subtitle="Small experiments, fast feedback.">
               <ul className="space-y-2">
                 {byKind.test.map((n) => (
-                  <li key={n.id} className="rounded-2xl border border-[var(--border)] bg-black/20 p-4 text-sm leading-6">
+                  <li key={n.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 text-sm leading-6">
                     {n.text}
                   </li>
                 ))}
@@ -246,7 +245,7 @@ export default function GrowthPage() {
         </div>
 
         <div className="space-y-6">
-          <Card title="Quick Capture" subtitle="Add a note while it’s fresh.">
+          <Card title="Quick Capture" subtitle="Log the insight while it is still fresh.">
             <div className="space-y-4">
               <div>
                 <div className="text-xs text-[var(--muted)]">Category</div>
@@ -257,7 +256,7 @@ export default function GrowthPage() {
                       onClick={() => setNewNoteKind(k)}
                       className={`rounded-2xl border px-3 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${
                         newNoteKind === k
-                          ? 'border-[var(--border)] bg-white/5 text-[var(--gb-cream)]'
+                          ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]'
                           : 'border-transparent bg-black/20 text-[var(--muted)] hover:bg-white/5'
                       }`}
                     >
@@ -280,13 +279,13 @@ export default function GrowthPage() {
             </div>
           </Card>
 
-          <Card title="Review Prompt" subtitle="Two-minute reset before you write.">
+          <Card title="Review Prompt" subtitle="A two-minute reset before writing.">
             <div className="space-y-3 text-sm leading-6 text-[var(--muted)]">
-              <div className="rounded-2xl border border-[var(--border)] bg-black/20 p-4">
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
                 What performed best this week, and why?
               </div>
-              <div className="rounded-2xl border border-[var(--border)] bg-black/20 p-4">
-                What’s the smallest test that could move a metric?
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
+                What is the smallest test that could move a core metric?
               </div>
             </div>
           </Card>

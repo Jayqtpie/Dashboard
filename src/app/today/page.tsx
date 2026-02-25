@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Card, TextInput } from '@/components/ui';
+import { Button, Card, PageHeader, TextInput } from '@/components/ui';
 
 type ChecklistItem = { id: number; label: string; done: number; order_index: number };
 type CTAKeyword = { id: number; keyword: string; active: number };
@@ -19,7 +19,6 @@ export default function TodayPage() {
   const [newKeyword, setNewKeyword] = useState('');
   const [picked, setPicked] = useState<string>('');
 
-  // Timer state
   const DURATION = 20 * 60;
   const [timerRunning, setTimerRunning] = useState(false);
   const [remaining, setRemaining] = useState(DURATION);
@@ -31,17 +30,20 @@ export default function TodayPage() {
     [keywords]
   );
 
-  async function load() {
-    const [c, k] = await Promise.all([
-      fetch('/api/checklist').then((r) => r.json()),
-      fetch('/api/cta-keywords').then((r) => r.json()),
-    ]);
-    setItems(c.items);
-    setKeywords(k.keywords);
-  }
-
   useEffect(() => {
-    load();
+    let cancelled = false;
+
+    Promise.all([fetch('/api/checklist').then((r) => r.json()), fetch('/api/cta-keywords').then((r) => r.json())])
+      .then(([c, k]) => {
+        if (cancelled) return;
+        setItems(c.items);
+        setKeywords(k.keywords);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -64,7 +66,9 @@ export default function TodayPage() {
   }, [timerRunning]);
 
   useEffect(() => {
-    if (timerRunning && remaining === 0) {
+    if (!(timerRunning && remaining === 0)) return;
+
+    const tid = window.setTimeout(() => {
       setTimerRunning(false);
       if (intervalRef.current) {
         window.clearInterval(intervalRef.current);
@@ -79,7 +83,9 @@ export default function TodayPage() {
           body: JSON.stringify({ action: 'complete', id }),
         }).catch(() => {});
       }
-    }
+    }, 0);
+
+    return () => window.clearTimeout(tid);
   }, [remaining, timerRunning]);
 
   async function toggle(id: number, done: boolean) {
@@ -155,27 +161,16 @@ export default function TodayPage() {
   const pct = items.length ? Math.round((completed / items.length) * 100) : 0;
 
   return (
-    <div className="space-y-6">
-      <div className="glass card-edge rounded-3xl p-6 shadow-[var(--shadow-card)]">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="min-w-0">
-            <div className="text-[11px] tracking-[0.34em] text-[var(--muted)]">TODAY</div>
-            <h1 className="mt-2 text-2xl font-semibold leading-8 tracking-tight text-[var(--gb-cream)]">
-              Execute clean. Publish. Sprint.
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
-              Keep the workflow tight: pick a CTA keyword, publish, then run a 20‑minute engagement sprint. ({pct}% checklist complete)
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-black/25 px-4 py-3">
-            <div className="min-w-0">
-              <div className="text-xs text-[var(--muted)]">Picked CTA</div>
-              <div className="truncate text-lg font-semibold tracking-wide text-[var(--gb-gold)]">
-                {picked || '—'}
-              </div>
-            </div>
-            <div className="flex shrink-0 gap-2">
+    <div className="space-y-6 sm:space-y-7">
+      <PageHeader
+        eyebrow="TODAY"
+        title="Execute clean. Publish. Sprint."
+        description={`Pick a CTA keyword, publish, then run a focused 20-minute engagement sprint. ${pct}% of today’s checklist is complete.`}
+        right={
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-3 sm:min-w-[210px]">
+            <div className="text-xs text-[var(--muted)]">Picked CTA</div>
+            <div className="mt-1 truncate text-lg font-semibold text-[var(--gb-gold)]">{picked || '—'}</div>
+            <div className="mt-3 flex gap-2">
               <Button onClick={pickKeyword} disabled={!activeKeywords.length}>
                 Pick
               </Button>
@@ -184,28 +179,30 @@ export default function TodayPage() {
               </Button>
             </div>
           </div>
-        </div>
-      </div>
+        }
+      />
 
-      {/* Above-the-fold: the two primary actions */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card title="20‑Min Engagement Sprint" subtitle="Start immediately after publishing. Reply, like, and DM fast.">
-          <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-            <div className="glass-strong rounded-3xl p-6">
-              <div className="text-[11px] tracking-[0.34em] text-[var(--muted)]">COUNTDOWN</div>
-              <div className="mt-2 font-mono text-6xl leading-none text-[var(--gb-cream)]">{fmt(remaining)}</div>
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Card
+          title="20-Min Engagement Sprint"
+          subtitle="Start immediately after publishing: reply, like, and DM while momentum is fresh."
+        >
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div className="glass-strong rounded-3xl p-5 sm:p-6">
+              <div className="text-[11px] tracking-[0.3em] text-[var(--muted)]">COUNTDOWN</div>
+              <div className="mt-3 font-mono text-5xl leading-none text-[var(--foreground)] sm:text-6xl">{fmt(remaining)}</div>
               <div className="mt-3 text-sm text-[var(--muted)]">
                 {picked ? (
                   <span>
                     Linked CTA: <span className="text-[var(--gb-gold)]">{picked}</span>
                   </span>
                 ) : (
-                  'Tip: pick a CTA keyword first so you can track responses.'
+                  'Tip: pick a CTA keyword first to better track responses.'
                 )}
               </div>
             </div>
 
-            <div className="flex flex-row gap-2 md:flex-col md:justify-end">
+            <div className="flex flex-row gap-2 lg:flex-col lg:justify-end">
               {!timerRunning ? (
                 <Button onClick={startTimer}>Start 20:00</Button>
               ) : (
@@ -220,11 +217,11 @@ export default function TodayPage() {
           </div>
 
           <div className="mt-4 text-xs text-[var(--muted)]">
-            When the timer hits zero we’ll mark the session completed in the local database.
+            When the timer hits zero, the session is automatically marked completed in your local database.
           </div>
         </Card>
 
-        <Card title="CTA Keywords" subtitle="Keep the funnel consistent: activate only what you want to count.">
+        <Card title="CTA Keywords" subtitle="Keep your funnel consistent: activate only the keywords you want attributed.">
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
               {keywords.map((k) => (
@@ -232,7 +229,7 @@ export default function TodayPage() {
                   key={k.id}
                   className={`rounded-2xl border px-3 py-2 text-xs font-semibold tracking-wide transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${
                     k.active
-                      ? 'border-[var(--border)] bg-white/5 text-[var(--gb-cream)]'
+                      ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]'
                       : 'border-transparent bg-black/20 text-[var(--muted)] hover:bg-white/5'
                   }`}
                   onClick={async () => {
@@ -250,21 +247,21 @@ export default function TodayPage() {
               ))}
             </div>
 
-            <div className="flex gap-2">
+            <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
               <TextInput value={newKeyword} onChange={setNewKeyword} placeholder="Add keyword (e.g., RESET)" />
               <Button variant="outline" onClick={addKeyword}>
                 Save
               </Button>
             </div>
 
-            <div className="rounded-3xl border border-[var(--border)] bg-black/20 p-5">
+            <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface-soft)] p-5">
               <div className="text-xs text-[var(--muted)]">Active keywords</div>
               <div className="mt-2 flex flex-wrap gap-2">
                 {activeKeywords.length ? (
                   activeKeywords.map((k) => (
                     <span
                       key={k}
-                      className="rounded-full border border-[var(--border)] bg-white/5 px-3 py-1 text-xs font-semibold tracking-wide text-[var(--gb-cream)]"
+                      className="rounded-full border border-[var(--border)] bg-white/5 px-3 py-1 text-xs font-semibold tracking-wide text-[var(--foreground)]"
                     >
                       {k}
                     </span>
@@ -278,13 +275,13 @@ export default function TodayPage() {
         </Card>
       </div>
 
-      <Card title="Posting Workflow" subtitle="Keep it simple. Finish strong.">
+      <Card title="Posting Workflow" subtitle="Stay simple and deliberate. Finish strong.">
         <div className="space-y-3">
           <div className="grid gap-2">
             {items.map((it) => (
               <label
                 key={it.id}
-                className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border)] bg-black/20 p-4 transition hover:bg-black/30"
+                className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4 transition hover:bg-black/30"
               >
                 <input
                   type="checkbox"
@@ -293,15 +290,13 @@ export default function TodayPage() {
                   onChange={(e) => toggle(it.id, e.target.checked)}
                 />
                 <div className="min-w-0">
-                  <div className={`text-sm leading-6 ${it.done ? 'line-through text-[var(--muted)]' : ''}`}>
-                    {it.label}
-                  </div>
+                  <div className={`text-sm leading-6 ${it.done ? 'line-through text-[var(--muted)]' : ''}`}>{it.label}</div>
                 </div>
               </label>
             ))}
           </div>
 
-          <div className="flex gap-2 pt-1">
+          <div className="grid gap-2 pt-1 sm:grid-cols-[minmax(0,1fr)_auto]">
             <TextInput value={newItem} onChange={setNewItem} placeholder="Add a quick step…" />
             <Button onClick={addChecklist}>Add</Button>
           </div>
