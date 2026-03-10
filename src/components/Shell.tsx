@@ -54,24 +54,24 @@ export default function Shell({ children }: { children: ReactNode }) {
                 <div className="eyebrow">GuidedBarakah · founder command center</div>
                 <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] lg:items-end">
                   <div>
-                    <Link href="/" className="block font-serif-ui text-[2.8rem] leading-[0.9] text-[var(--foreground)] sm:text-[4.2rem] lg:text-[5.25rem]">
-                      Founder war room.
+                    <Link href="/" className="block text-[2rem] font-semibold leading-[0.92] tracking-[-0.045em] text-[var(--foreground)] sm:text-[2.85rem] lg:text-[3.4rem]">
+                      Founder war room
                     </Link>
-                    <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)] sm:text-base">
-                      Flat architecture, hard priorities, live signal. No floating card zoo. Just one place to decide what matters and move.
+                    <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)] sm:text-[15px]">
+                      Flat architecture. Hard priorities. Live signal. One place to decide what matters and move.
                     </p>
                   </div>
                   <div className="grid gap-3 border-t border-[var(--line)] pt-3 text-sm text-[var(--muted)] lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
                     <div className="flex items-center justify-between gap-4 border-b border-[var(--line-soft)] pb-2">
-                      <span className="uppercase tracking-[0.18em]">Operating mode</span>
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">Operating mode</span>
                       <span className="text-[var(--muted-strong)]">{theme === 'dark' ? 'After hours' : 'Daylight review'}</span>
                     </div>
                     <div className="flex items-center justify-between gap-4 border-b border-[var(--line-soft)] pb-2">
-                      <span className="uppercase tracking-[0.18em]">Principle</span>
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">Principle</span>
                       <span className="text-right text-[var(--muted-strong)]">Barakah over noise</span>
                     </div>
                     <div className="flex items-center justify-between gap-4">
-                      <span className="uppercase tracking-[0.18em]">Theme</span>
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">Theme</span>
                       <Button variant="outline" onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}>
                         {theme === 'dark' ? 'Light' : 'Dark'}
                       </Button>
