@@ -15,12 +15,12 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section className={`panel panel-hover rounded-[32px] p-5 sm:p-6 ${className}`}>
+    <section className={`section-block ${className}`}>
       {(title || subtitle || right) && (
-        <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div className="min-w-0 max-w-3xl">
-            {title ? <h2 className="font-serif-ui text-[1.5rem] leading-tight text-[var(--foreground)]">{title}</h2> : null}
-            {subtitle ? <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{subtitle}</p> : null}
+            {title ? <h2 className="font-serif-ui text-[1.9rem] leading-[1.02] text-[var(--foreground)] sm:text-[2.25rem]">{title}</h2> : null}
+            {subtitle ? <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--muted)] sm:text-[15px]">{subtitle}</p> : null}
           </div>
           {right ? <div className="shrink-0">{right}</div> : null}
         </div>
@@ -42,16 +42,16 @@ export function PageHeader({
   right?: ReactNode;
 }) {
   return (
-    <section className="hero-panel rounded-[36px] p-6 sm:p-8 lg:p-10">
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-        <div className="min-w-0 max-w-3xl">
+    <section className="page-header">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(240px,320px)] lg:items-end">
+        <div className="min-w-0 max-w-4xl">
           <div className="eyebrow">{eyebrow}</div>
-          <h1 className="font-serif-ui mt-3 text-4xl leading-[1.02] text-[var(--foreground)] sm:text-5xl">
+          <h1 className="font-serif-ui mt-4 text-[3.2rem] leading-[0.95] text-[var(--foreground)] sm:text-[4.6rem] lg:text-[5.5rem]">
             {title}
           </h1>
-          <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--muted)] sm:text-base">{description}</p>
+          <p className="mt-5 max-w-2xl text-base leading-8 text-[var(--muted)] sm:text-lg">{description}</p>
         </div>
-        {right ? <div className="shrink-0">{right}</div> : null}
+        {right ? <div className="relative z-10">{right}</div> : null}
       </div>
     </section>
   );
@@ -61,18 +61,24 @@ export function StatTile({
   label,
   value,
   hint,
-  accent = 'teal',
+  accent = 'plum',
 }: {
   label: string;
   value: ReactNode;
   hint?: string;
-  accent?: 'teal' | 'gold' | 'cream';
+  accent?: 'plum' | 'peach' | 'sage';
 }) {
+  const accentMap = {
+    plum: 'text-[var(--gb-berry)] [data-theme=dark]:text-[var(--gb-apricot)]',
+    peach: 'text-[var(--gb-wine)] [data-theme=dark]:text-[var(--gb-apricot)]',
+    sage: 'text-[var(--gb-berry)] [data-theme=dark]:text-[var(--gb-sage)]',
+  };
+
   return (
-    <div className={`metric-tile metric-${accent} rounded-[28px] p-4 sm:p-5`}>
+    <div className="stat-tile border-l border-[var(--line)] pl-4 sm:pl-5">
       <div className="text-[11px] uppercase tracking-[0.24em] text-[var(--muted)]">{label}</div>
-      <div className="mt-3 text-3xl font-semibold leading-none text-[var(--foreground)] sm:text-4xl">{value}</div>
-      {hint ? <div className="mt-3 text-sm leading-6 text-[var(--muted)]">{hint}</div> : null}
+      <div className={`mt-3 text-3xl font-semibold leading-none sm:text-4xl ${accentMap[accent]}`}>{value}</div>
+      {hint ? <div className="mt-3 max-w-xs text-sm leading-6 text-[var(--muted)]">{hint}</div> : null}
     </div>
   );
 }
@@ -91,14 +97,14 @@ export function Button({
   disabled?: boolean;
 }) {
   const base =
-    'inline-flex min-h-11 items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold tracking-[0.01em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 disabled:cursor-not-allowed disabled:opacity-50 active:translate-y-px';
+    'inline-flex min-h-11 items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold tracking-[0.02em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/70 disabled:cursor-not-allowed disabled:opacity-50 active:translate-y-px';
 
   const styles: Record<string, string> = {
     primary:
-      'bg-[linear-gradient(135deg,var(--gb-teal)_0%,color-mix(in_srgb,var(--gb-teal)_82%,white_18%)_100%)] text-[var(--gb-cream)] shadow-[0_14px_32px_rgba(26,83,92,0.22)] hover:brightness-105',
+      'bg-[linear-gradient(135deg,var(--gb-berry)_0%,color-mix(in_srgb,var(--gb-plum)_72%,black_28%)_100%)] text-[var(--gb-cream)] shadow-[0_18px_40px_rgba(58,29,70,0.24)] hover:brightness-105',
     ghost: 'bg-transparent text-[var(--foreground)] hover:bg-[var(--interactive-soft)]',
     outline:
-      'border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_92%,white_8%)] text-[var(--foreground)] hover:bg-[var(--surface-soft)]',
+      'border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface-strong)_90%,white_10%)] text-[var(--foreground)] hover:bg-[var(--surface-soft)]',
   };
 
   return (
@@ -121,7 +127,7 @@ export function TextInput({
 }) {
   return (
     <input
-      className="w-full rounded-[20px] border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_94%,white_6%)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/50"
+      className="input-surface w-full rounded-[20px] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
@@ -141,7 +147,7 @@ export function TextArea({
 }) {
   return (
     <textarea
-      className="min-h-28 w-full rounded-[20px] border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_94%,white_6%)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/50"
+      className="input-surface min-h-32 w-full rounded-[24px] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
@@ -163,21 +169,19 @@ export function NavLink({
   return (
     <Link
       href={href}
-      className={`group flex items-center justify-between gap-3 rounded-[24px] px-4 py-3.5 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${
-        active
-          ? 'bg-[linear-gradient(135deg,color-mix(in_srgb,var(--gb-gold)_12%,white_88%),color-mix(in_srgb,var(--gb-teal)_10%,white_90%))] text-[var(--foreground)] shadow-[inset_0_0_0_1px_rgba(201,168,76,0.24)]'
-          : 'text-[var(--muted-strong)] hover:bg-[var(--interactive-soft)]'
+      className={`group grid gap-1 border-l pl-4 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/70 ${
+        active ? 'border-[var(--gb-peach)] text-[var(--foreground)]' : 'border-transparent text-[var(--muted-strong)] hover:border-[var(--line)] hover:text-[var(--foreground)]'
       }`}
     >
-      <div className="min-w-0">
-        <div className="font-semibold">{label}</div>
-        {detail ? <div className="mt-0.5 truncate text-xs text-[var(--muted)]">{detail}</div> : null}
+      <div className="flex items-center gap-3">
+        <span className="font-semibold">{label}</span>
+        <span
+          className={`h-2 w-2 rounded-full transition ${
+            active ? 'bg-[var(--gb-peach)] shadow-[0_0_0_6px_rgba(243,181,138,0.14)]' : 'bg-[var(--border)] group-hover:bg-[var(--gb-berry)]'
+          }`}
+        />
       </div>
-      <span
-        className={`h-2.5 w-2.5 shrink-0 rounded-full transition ${
-          active ? 'bg-[var(--gb-gold)] shadow-[0_0_0_5px_rgba(201,168,76,0.14)]' : 'bg-[var(--border)] group-hover:bg-[var(--gb-teal-soft)]'
-        }`}
-      />
+      {detail ? <div className="text-xs leading-5 text-[var(--muted)]">{detail}</div> : null}
     </Link>
   );
 }

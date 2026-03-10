@@ -8,11 +8,11 @@ import { Button, NavLink } from '@/components/ui';
 type ThemeMode = 'light' | 'dark';
 
 const tabs = [
-  { href: '/', label: 'Home', detail: 'Your workspace overview' },
-  { href: '/today', label: 'Today', detail: 'Daily rhythm and focus' },
-  { href: '/growth', label: 'Growth', detail: 'Signals, copy, and notes' },
-  { href: '/funnel', label: 'Offers', detail: 'Keyword and conversion flow' },
-  { href: '/ops-health', label: 'Care', detail: 'Operations and reliability' },
+  { href: '/', label: 'World', detail: 'Orientation and weekly cadence' },
+  { href: '/today', label: 'Today', detail: 'Publish, engage, stay deliberate' },
+  { href: '/growth', label: 'Signal', detail: 'Metrics, copy, and decisions' },
+  { href: '/funnel', label: 'Offers', detail: 'Interest, clicks, and purchases' },
+  { href: '/ops-health', label: 'Care', detail: 'Reliability, issues, and calm' },
 ];
 
 export default function Shell({ children }: { children: ReactNode }) {
@@ -41,91 +41,81 @@ export default function Shell({ children }: { children: ReactNode }) {
     <div className="min-h-screen">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[var(--gb-teal)] focus:px-4 focus:py-2 focus:text-sm focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[var(--gb-berry)] focus:px-4 focus:py-2 focus:text-sm focus:text-white"
       >
         Skip to content
       </a>
 
-      <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-4 sm:px-6 lg:px-8 lg:pt-6">
-        <div className="grid gap-6 xl:grid-cols-[290px_minmax(0,1fr)]">
-          <aside className="xl:sticky xl:top-6 xl:h-[calc(100vh-3rem)]">
-            <div className="panel flex h-full flex-col rounded-[36px] p-4 sm:p-5">
-              <div className="ornament-divider pb-5">
-                <div className="eyebrow">GuidedBarakah</div>
-                <Link href="/" className="mt-3 block font-serif-ui text-3xl leading-tight text-[var(--foreground)]">
-                  Creator workspace
-                </Link>
-                <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                  A quieter home for Muslim creators and entrepreneurs building with intention.
-                </p>
-              </div>
-
-              <nav className="mt-5 space-y-2">
-                {tabs.map((tab) => (
-                  <NavLink
-                    key={tab.href}
-                    href={tab.href}
-                    label={tab.label}
-                    detail={tab.detail}
-                    active={pathname === tab.href}
-                  />
-                ))}
-              </nav>
-
-              <div className="mt-5 rounded-[28px] border border-[var(--border)] bg-[linear-gradient(145deg,color-mix(in_srgb,var(--gb-gold)_12%,var(--surface)_88%),color-mix(in_srgb,var(--gb-teal)_12%,var(--surface-soft)_88%))] p-4">
-                <div className="eyebrow">Guiding principle</div>
-                <div className="mt-2 font-serif-ui text-2xl text-[var(--foreground)]">Barakah over hustle</div>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  Choose clarity, protect your energy, and let the workspace feel supportive rather than loud.
-                </p>
-              </div>
-
-              <div className="mt-auto space-y-4 pt-5">
-                <div className="rounded-[28px] border border-[var(--border)] bg-[var(--surface-soft)] p-4">
-                  <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Theme</div>
-                  <div className="mt-3 flex items-center justify-between gap-3">
-                    <div className="text-sm text-[var(--muted-strong)]">{theme === 'dark' ? 'Evening mode' : 'Day mode'}</div>
-                    <Button variant="outline" onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}>
-                      {theme === 'dark' ? 'Light' : 'Dark'}
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="rounded-[28px] bg-[var(--shell-release-from)] px-4 py-5 text-[var(--gb-cream)]">
-                  <div className="text-xs uppercase tracking-[0.18em] text-[rgba(250,240,230,0.72)]">Built around</div>
-                  <div className="mt-2 font-serif-ui text-2xl">Steady work</div>
-                  <p className="mt-2 text-sm leading-6 text-[rgba(250,240,230,0.82)]">
-                    Today, growth, offers, and business care—organized as one coherent practice.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </aside>
-
-          <main id="main" className="min-w-0 space-y-6">
-            <header className="panel rounded-[36px] px-5 py-5 sm:px-6 lg:px-8">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="mx-auto max-w-[1480px] px-4 pb-10 pt-4 sm:px-6 lg:px-8 lg:pt-6">
+        <div className="editorial-frame rounded-[40px] px-5 py-5 sm:px-7 sm:py-7 lg:px-10 lg:py-10">
+          <div className="grid gap-8 xl:grid-cols-[280px_minmax(0,1fr)] xl:gap-12">
+            <aside className="xl:sticky xl:top-6 xl:self-start">
+              <div className="space-y-8">
                 <div>
-                  <div className="eyebrow">Workspace</div>
-                  <div className="mt-2 font-serif-ui text-[2rem] leading-tight text-[var(--foreground)] sm:text-[2.4rem]">
-                    Build with calm confidence.
-                  </div>
-                  <p className="mt-2 max-w-3xl text-sm leading-7 text-[var(--muted)] sm:text-base">
-                    A more spacious, editorial home for your daily rhythm, audience learning, offer health, and operational care.
+                  <div className="eyebrow">GuidedBarakah</div>
+                  <Link href="/" className="mt-4 block font-serif-ui text-[2.6rem] leading-[0.92] text-[var(--foreground)] sm:text-[3.1rem]">
+                    Command center,
+                    <br />
+                    reincarnated.
+                  </Link>
+                  <p className="mt-4 max-w-xs text-sm leading-7 text-[var(--muted)]">
+                    Less dashboard cosplay. More brand world, rhythm, and conviction for Muslim creators building serious work.
                   </p>
                 </div>
-                <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-2 text-sm text-[var(--muted-strong)]">
-                  Local-first workspace
+
+                <nav className="space-y-4">
+                  {tabs.map((tab) => (
+                    <NavLink key={tab.href} href={tab.href} label={tab.label} detail={tab.detail} active={pathname === tab.href} />
+                  ))}
+                </nav>
+
+                <div className="section-block">
+                  <div className="eyebrow">Principle</div>
+                  <div className="mt-3 font-serif-ui text-3xl leading-tight text-[var(--foreground)]">Barakah over noise.</div>
+                  <p className="mt-3 max-w-xs text-sm leading-7 text-[var(--muted)]">
+                    Choose stronger ideas, calmer systems, and a product that feels composed enough to trust.
+                  </p>
+                </div>
+
+                <div className="section-block flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Mode</div>
+                    <div className="mt-1 text-sm text-[var(--muted-strong)]">{theme === 'dark' ? 'After hours' : 'Day studio'}</div>
+                  </div>
+                  <Button variant="outline" onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}>
+                    {theme === 'dark' ? 'Light' : 'Dark'}
+                  </Button>
                 </div>
               </div>
-            </header>
+            </aside>
 
-            {children}
+            <main id="main" className="page-shell min-w-0 space-y-10">
+              <header className="page-header pb-8">
+                <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+                  <div>
+                    <div className="eyebrow">Workspace</div>
+                    <div className="font-serif-ui mt-4 max-w-4xl text-[3.4rem] leading-[0.94] text-[var(--foreground)] sm:text-[4.6rem]">
+                      Build a world,
+                      <br />
+                      not another admin panel.
+                    </div>
+                    <p className="mt-4 max-w-3xl text-base leading-8 text-[var(--muted)] sm:text-lg">
+                      Editorial pacing, stronger type, cleaner surfaces, and calmer scroll behavior across today, signal, offers, and care.
+                    </p>
+                  </div>
+                  <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-2 text-sm text-[var(--muted-strong)]">
+                    Local-first workspace
+                  </div>
+                </div>
+              </header>
 
-            <footer className="px-2 pb-2 text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
-              GuidedBarakah workspace · grounded systems · premium calm
-            </footer>
-          </main>
+              {children}
+
+              <footer className="border-t border-[var(--line)] pt-5 text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
+                GuidedBarakah workspace · premium calm · deliberate systems
+              </footer>
+            </main>
+          </div>
         </div>
       </div>
     </div>

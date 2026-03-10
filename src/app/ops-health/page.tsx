@@ -21,9 +21,9 @@ type Alert = {
 
 function badge(sev: string) {
   const base = 'inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold border';
-  if (sev === 'critical') return `${base} border-red-500/35 bg-red-500/12 text-red-200`;
-  if (sev === 'warn') return `${base} border-amber-500/35 bg-amber-500/12 text-amber-200`;
-  return `${base} border-sky-500/35 bg-sky-500/12 text-sky-200`;
+  if (sev === 'critical') return `${base} border-red-500/35 bg-red-500/12 text-red-300`;
+  if (sev === 'warn') return `${base} border-amber-500/35 bg-amber-500/12 text-amber-300`;
+  return `${base} border-sky-500/35 bg-sky-500/12 text-sky-300`;
 }
 
 export default function OperationsPage() {
@@ -97,47 +97,52 @@ export default function OperationsPage() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-7">
+    <div className="space-y-10">
       <PageHeader
         eyebrow="Care"
         title="Keep the business dependable and emotionally quiet"
-        description="This page reframes operations as care: watch the systems that support your work, respond early, and keep the backstage smooth."
-        right={<div className="rounded-[24px] border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-3"><div className="text-xs text-[var(--muted)]">Current status</div><div className="mt-1 text-xl font-semibold text-[var(--gb-gold)]">{health}</div></div>}
+        description="Operations is framed as care now: watch the systems supporting your work, respond early, and keep the backstage smooth enough that the front stage can stay elegant."
+        right={
+          <div className="soft-well rounded-[28px] border border-[var(--border)] px-5 py-4">
+            <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Current status</div>
+            <div className="mt-2 text-3xl font-semibold text-[var(--foreground)]">{health}</div>
+          </div>
+        }
       />
 
-      <section className="grid gap-4 sm:grid-cols-3">
-        <StatTile label="Delivery issues" value={rollup?.delivery_errors ?? '—'} hint="Anything customer-facing that failed." accent="teal" />
-        <StatTile label="Automation successes" value={rollup?.zapier_success ?? '—'} hint="Recent tasks that completed cleanly." accent="gold" />
-        <StatTile label="Automation failures" value={rollup?.zapier_fail ?? '—'} hint="Failures worth catching before they compound." accent="cream" />
+      <section className="stat-strip grid gap-5 py-5 sm:grid-cols-3">
+        <StatTile label="Delivery issues" value={rollup?.delivery_errors ?? '—'} hint="Anything customer-facing that failed." accent="plum" />
+        <StatTile label="Automation successes" value={rollup?.zapier_success ?? '—'} hint="Recent tasks that completed cleanly." accent="peach" />
+        <StatTile label="Automation failures" value={rollup?.zapier_fail ?? '—'} hint="Failures worth catching before they compound." accent="sage" />
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_400px]">
+      <div className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_380px]">
         <Card title="Business health inputs" subtitle={rollup?.updated_at ? `Last updated ${new Date(rollup.updated_at).toLocaleString()}` : 'Update the current health numbers.'} right={<Button onClick={saveRollup}>Save</Button>}>
           <div className="grid gap-4 md:grid-cols-3">
             <div>
-              <div className="mb-2 text-xs text-[var(--muted)]">Zapier success</div>
+              <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Zapier success</div>
               <TextInput type="number" value={zapierSuccess} onChange={setZapierSuccess} />
             </div>
             <div>
-              <div className="mb-2 text-xs text-[var(--muted)]">Zapier fail</div>
+              <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Zapier fail</div>
               <TextInput type="number" value={zapierFail} onChange={setZapierFail} />
             </div>
             <div>
-              <div className="mb-2 text-xs text-[var(--muted)]">Delivery errors</div>
+              <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Delivery errors</div>
               <TextInput type="number" value={deliveryErrors} onChange={setDeliveryErrors} />
             </div>
           </div>
         </Card>
 
-        <Card title="Log an alert" subtitle="Keep issue capture fast and lightweight.">
-          <div className="space-y-4">
+        <Card title="Log an alert" subtitle="Fast input. Minimal drama.">
+          <div className="space-y-5">
             <div>
-              <div className="text-xs text-[var(--muted)]">Severity</div>
-              <div className="mt-2 grid grid-cols-3 gap-2">
+              <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Severity</div>
+              <div className="mt-3 grid grid-cols-3 gap-2">
                 {(['info', 'warn', 'critical'] as const).map((s) => (
                   <button
                     key={s}
-                    className={`rounded-[18px] border px-3 py-2 text-sm font-semibold uppercase transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${newSev === s ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]' : 'border-transparent bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
+                    className={`rounded-[18px] border px-3 py-2 text-sm font-semibold uppercase transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60 ${newSev === s ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]' : 'border-transparent bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
                     onClick={() => setNewSev(s)}
                   >
                     {s}
@@ -147,7 +152,7 @@ export default function OperationsPage() {
             </div>
 
             <div>
-              <div className="mb-2 text-xs text-[var(--muted)]">Message</div>
+              <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Message</div>
               <TextInput value={newMsg} onChange={setNewMsg} placeholder="What needs attention?" />
             </div>
 
@@ -155,27 +160,25 @@ export default function OperationsPage() {
               <Button onClick={addAlert}>Save alert</Button>
             </div>
 
-            <div className="rounded-[24px] bg-[var(--surface-soft)] p-4 text-sm leading-6 text-[var(--muted)]">If delivery errors rise above zero, pause new pushes until the customer path is stable again.</div>
+            <div className="border-t border-[var(--line)] pt-4 text-sm leading-7 text-[var(--muted)]">If delivery errors rise above zero, pause new pushes until the customer path is stable again.</div>
           </div>
         </Card>
       </div>
 
-      <Card title="Open alerts" subtitle="A short, readable list of what still needs tending.">
-        <div className="space-y-3">
+      <Card title="Open alerts" subtitle="A short readable list of what still needs tending.">
+        <div className="space-y-4">
           {alerts.map((a) => (
-            <div key={a.id} className="rounded-[28px] border border-[var(--border)] bg-[var(--surface-soft)] p-5">
-              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className={badge(a.severity)}>{a.severity}</span>
-                    {a.resolved === 1 ? <span className="text-xs text-[var(--muted)]">resolved</span> : null}
-                  </div>
-                  <div className="mt-3 text-sm leading-6 text-[var(--muted-strong)]">{a.message}</div>
-                  <div className="mt-3 text-xs text-[var(--muted)]">{new Date(a.created_at).toLocaleString()}</div>
+            <div key={a.id} className="grid gap-4 border-t border-[var(--line)] pt-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={badge(a.severity)}>{a.severity}</span>
+                  {a.resolved === 1 ? <span className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">resolved</span> : null}
                 </div>
-                <div className="flex shrink-0 gap-2">
-                  {a.resolved === 0 ? <Button variant="outline" onClick={() => toggleResolved(a.id, true)}>Resolve</Button> : <Button variant="ghost" onClick={() => toggleResolved(a.id, false)}>Reopen</Button>}
-                </div>
+                <div className="mt-3 text-sm leading-7 text-[var(--muted-strong)]">{a.message}</div>
+                <div className="mt-2 text-xs text-[var(--muted)]">{new Date(a.created_at).toLocaleString()}</div>
+              </div>
+              <div className="flex shrink-0 gap-2">
+                {a.resolved === 0 ? <Button variant="outline" onClick={() => toggleResolved(a.id, true)}>Resolve</Button> : <Button variant="ghost" onClick={() => toggleResolved(a.id, false)}>Reopen</Button>}
               </div>
             </div>
           ))}

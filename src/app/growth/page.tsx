@@ -111,29 +111,25 @@ export default function GrowthPage() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-7">
+    <div className="space-y-10">
       <PageHeader
-        eyebrow="Growth"
-        title="Read the signal, then make one good decision"
-        description="This page is now less like a dashboard wall and more like a weekly review studio: metrics, copy learnings, and gentle decision-making in one flow."
-        right={<div className="rounded-[24px] border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-3 text-sm text-[var(--muted)]">Tap any metric card to update it.</div>}
+        eyebrow="Signal"
+        title="Read what is compounding, then make one good decision"
+        description="Growth is now arranged like a review studio: numbers first, then language, then judgment. It is more editorial, less dashboard wall."
+        right={<div className="soft-well rounded-[26px] border border-[var(--border)] px-5 py-4 text-sm leading-6 text-[var(--muted)]">Tap any metric to update it in place. Fast input, less ceremony.</div>}
       />
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatTile label="Metrics tracked" value={metrics.length} hint={latestMetricUpdate} accent="teal" />
-        <StatTile label="Hooks saved" value={hooks.length} hint="Ideas worth revisiting." accent="gold" />
-        <StatTile label="CTAs saved" value={ctas.length} hint="Clear invitations that are working." accent="cream" />
-        <StatTile label="Review notes" value={notes.length} hint="Small decisions captured while fresh." accent="teal" />
+      <section className="stat-strip grid gap-5 py-5 sm:grid-cols-2 xl:grid-cols-4">
+        <StatTile label="Metrics tracked" value={metrics.length} hint={latestMetricUpdate} accent="plum" />
+        <StatTile label="Hooks saved" value={hooks.length} hint="Ideas worth reusing and reshaping." accent="peach" />
+        <StatTile label="CTAs saved" value={ctas.length} hint="Invitations that already carry evidence." accent="sage" />
+        <StatTile label="Review notes" value={notes.length} hint="Small decisions captured while still fresh." accent="plum" />
       </section>
 
       <InstagramStatsInput />
 
-      <section className="space-y-3">
-        <div>
-          <h2 className="font-serif-ui text-3xl text-[var(--foreground)]">Performance snapshot</h2>
-          <p className="text-sm text-[var(--muted)]">Keep the first view focused on signal, not clutter.</p>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <Card title="Performance snapshot" subtitle="Keep the first read focused on signal, not clutter.">
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {metrics.map((m) => (
             <button
               key={m.key}
@@ -145,28 +141,26 @@ export default function GrowthPage() {
                 if (Number.isNaN(next)) return;
                 updateMetric(m.key, next);
               }}
-              className="rounded-[28px] border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface)_94%,white_6%)] p-5 text-left transition hover:bg-[var(--surface-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60"
+              className="group border-t border-[var(--line)] pt-5 text-left transition hover:translate-y-[-2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="text-sm font-medium text-[var(--foreground)]">{m.label}</div>
-                  <div className="mt-3 text-3xl font-semibold leading-none text-[var(--foreground)]">
-                    {m.value}
-                    <span className="ml-1 text-xs font-medium text-[var(--muted)]">{m.unit ?? ''}</span>
-                  </div>
-                </div>
-                <Button variant="outline">Edit</Button>
+              <div className="text-sm font-medium text-[var(--foreground)]">{m.label}</div>
+              <div className="mt-4 text-4xl font-semibold leading-none text-[var(--foreground)]">
+                {m.value}
+                <span className="ml-1 text-xs font-medium uppercase tracking-[0.18em] text-[var(--muted)]">{m.unit ?? ''}</span>
               </div>
-              <div className="mt-4 text-xs text-[var(--muted)]">Updated {new Date(m.updated_at).toLocaleString()}</div>
+              <div className="mt-4 flex items-center justify-between gap-3 text-xs text-[var(--muted)]">
+                <span>Updated {new Date(m.updated_at).toLocaleString()}</span>
+                <span className="font-semibold text-[var(--gb-berry)] group-hover:text-[var(--foreground)]">Edit</span>
+              </div>
             </button>
           ))}
         </div>
-      </section>
+      </Card>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
-        <div className="space-y-6">
-          <Card title="Copy library" subtitle="Keep proven hooks and invitations together so writing feels easier next time.">
-            <div className="mb-5 flex flex-wrap gap-2">
+      <div className="grid gap-10 xl:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)]">
+        <div className="space-y-10">
+          <Card title="Copy library" subtitle="Keep hooks and invitations together so future writing starts with better raw material.">
+            <div className="mb-6 flex flex-wrap gap-2">
               {([
                 { key: 'all', label: 'All copy' },
                 { key: 'hook', label: 'Hooks only' },
@@ -175,22 +169,22 @@ export default function GrowthPage() {
                 <button
                   key={f.key}
                   onClick={() => setCopyFilter(f.key)}
-                  className={`min-h-10 rounded-full px-4 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${copyFilter === f.key ? 'bg-[var(--surface-soft)] text-[var(--foreground)]' : 'bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
+                  className={`min-h-10 rounded-full px-4 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60 ${copyFilter === f.key ? 'bg-[var(--surface-soft)] text-[var(--foreground)]' : 'bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
                 >
                   {f.label}
                 </button>
               ))}
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-10 lg:grid-cols-2">
               {copyFilter !== 'cta' && (
-                <div className="space-y-3">
-                  <div className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Hooks</div>
-                  <div className="space-y-2">
+                <div className="space-y-4">
+                  <div className="eyebrow">Hooks</div>
+                  <div className="space-y-3">
                     {visibleHooks.map((h) => (
-                      <div key={h.id} className="rounded-[24px] bg-[var(--surface-soft)] px-4 py-3">
-                        <div className="text-xs text-[var(--muted)]">Confidence score {h.score}/10</div>
-                        <div className="mt-1 text-sm leading-6 text-[var(--muted-strong)]">{h.text}</div>
+                      <div key={h.id} className="border-t border-[var(--line)] pt-4">
+                        <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Confidence score {h.score}/10</div>
+                        <div className="mt-2 text-sm leading-7 text-[var(--muted-strong)]">{h.text}</div>
                       </div>
                     ))}
                     {!visibleHooks.length && <div className="text-sm text-[var(--muted)]">No hooks yet.</div>}
@@ -208,13 +202,13 @@ export default function GrowthPage() {
               )}
 
               {copyFilter !== 'hook' && (
-                <div className="space-y-3">
-                  <div className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Calls to action</div>
-                  <div className="space-y-2">
+                <div className="space-y-4">
+                  <div className="eyebrow">Calls to action</div>
+                  <div className="space-y-3">
                     {visibleCtas.map((c) => (
-                      <div key={c.id} className="rounded-[24px] bg-[var(--surface-soft)] px-4 py-3">
-                        <div className="text-xs text-[var(--muted)]">Confidence score {c.score}/10</div>
-                        <div className="mt-1 text-sm leading-6 text-[var(--muted-strong)]">{c.text}</div>
+                      <div key={c.id} className="border-t border-[var(--line)] pt-4">
+                        <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Confidence score {c.score}/10</div>
+                        <div className="mt-2 text-sm leading-7 text-[var(--muted-strong)]">{c.text}</div>
                       </div>
                     ))}
                     {!visibleCtas.length && <div className="text-sm text-[var(--muted)]">No CTAs yet.</div>}
@@ -233,21 +227,21 @@ export default function GrowthPage() {
             </div>
           </Card>
 
-          <Card title="Decision notes" subtitle="Keep the review language gentle and action-oriented.">
-            <div className="grid gap-4 md:grid-cols-3">
+          <Card title="Decision notes" subtitle="Review language should help you act, not just archive.">
+            <div className="grid gap-8 md:grid-cols-3">
               {([
-                ['do_more', 'Do more', 'Double down on what is actually compounding.'],
+                ['do_more', 'Do more', 'Double down on what is genuinely compounding.'],
                 ['stop', 'Stop', 'Remove drag and protect your energy.'],
-                ['test', 'Test', 'Try one small experiment at a time.'],
+                ['test', 'Test', 'Run one small experiment at a time.'],
               ] as const).map(([key, title, desc]) => (
-                <section key={key} className="rounded-[28px] bg-[var(--surface-soft)] p-4 sm:p-5">
+                <section key={key} className="border-t border-[var(--line)] pt-5">
                   <div className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">{title}</div>
-                  <p className="mt-1 text-sm text-[var(--muted)]">{desc}</p>
-                  <ul className="mt-4 space-y-2.5">
+                  <p className="mt-2 text-sm leading-7 text-[var(--muted)]">{desc}</p>
+                  <ul className="mt-4 space-y-3">
                     {byKind[key].map((n) => (
-                      <li key={n.id} className="rounded-[20px] bg-[var(--surface)] px-3.5 py-3 text-sm leading-6 text-[var(--muted-strong)]">{n.text}</li>
+                      <li key={n.id} className="text-sm leading-7 text-[var(--muted-strong)]">{n.text}</li>
                     ))}
-                    {!byKind[key].length && <li className="rounded-[20px] bg-[var(--surface)] px-3.5 py-3 text-sm text-[var(--muted)]">No notes yet.</li>}
+                    {!byKind[key].length && <li className="text-sm text-[var(--muted)]">No notes yet.</li>}
                   </ul>
                 </section>
               ))}
@@ -255,17 +249,17 @@ export default function GrowthPage() {
           </Card>
         </div>
 
-        <div className="space-y-6">
-          <Card title="Quick capture" subtitle="Write the learning before it disappears.">
-            <div className="space-y-4">
+        <div className="space-y-10">
+          <Card title="Quick capture" subtitle="Write the learning before it evaporates.">
+            <div className="space-y-5">
               <div>
-                <div className="text-xs text-[var(--muted)]">Category</div>
-                <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1">
+                <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Category</div>
+                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1">
                   {(['do_more', 'stop', 'test'] as const).map((k) => (
                     <button
                       key={k}
                       onClick={() => setNewNoteKind(k)}
-                      className={`min-h-11 rounded-[18px] px-3 py-2.5 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-gold)]/60 ${newNoteKind === k ? 'bg-[var(--surface-soft)] text-[var(--foreground)]' : 'bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
+                      className={`min-h-11 rounded-[18px] px-3 py-2.5 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60 ${newNoteKind === k ? 'bg-[var(--surface-soft)] text-[var(--foreground)]' : 'bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
                     >
                       {kindLabel(k)}
                     </button>
@@ -274,8 +268,8 @@ export default function GrowthPage() {
               </div>
 
               <div>
-                <div className="text-xs text-[var(--muted)]">Note</div>
-                <div className="mt-2">
+                <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Note</div>
+                <div className="mt-3">
                   <TextArea value={newNote} onChange={setNewNote} placeholder="What did you learn, notice, or want to test next?" />
                 </div>
               </div>
@@ -286,10 +280,10 @@ export default function GrowthPage() {
             </div>
           </Card>
 
-          <Card title="Weekly reflection" subtitle="Two prompts to keep your review grounded.">
-            <div className="space-y-2 text-sm leading-6 text-[var(--muted)]">
-              <div className="rounded-[24px] bg-[var(--surface-soft)] p-4">What felt most resonant this week, and what made it resonate?</div>
-              <div className="rounded-[24px] bg-[var(--surface-soft)] p-4">What is the smallest next experiment that could strengthen a core metric?</div>
+          <Card title="Weekly reflection" subtitle="Two prompts to keep the review grounded.">
+            <div className="space-y-4 text-sm leading-7 text-[var(--muted-strong)]">
+              <div className="border-t border-[var(--line)] pt-4">What felt most resonant this week, and what gave it that resonance?</div>
+              <div className="border-t border-[var(--line)] pt-4">What is the smallest next experiment that could strengthen a core metric?</div>
             </div>
           </Card>
         </div>

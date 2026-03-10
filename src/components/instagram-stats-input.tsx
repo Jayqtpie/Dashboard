@@ -93,45 +93,45 @@ export default function InstagramStatsInput() {
   }, [entries]);
 
   return (
-    <Card title="Instagram snapshots" subtitle="Log follower count and engagement when you do a weekly review.">
-      <div className="space-y-6">
+    <Card title="Instagram snapshots" subtitle="Log follower count and engagement during the weekly review.">
+      <div className="space-y-8">
         <form onSubmit={onSubmit} className="grid gap-3 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
           <div>
-            <div className="mb-2 text-xs text-[var(--muted)]">Followers</div>
+            <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Followers</div>
             <TextInput type="number" value={followers} onChange={setFollowers} placeholder="e.g. 12500" />
           </div>
           <div>
-            <div className="mb-2 text-xs text-[var(--muted)]">Engagement (%)</div>
+            <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Engagement (%)</div>
             <TextInput type="number" value={engagement} onChange={setEngagement} placeholder="e.g. 4.8" />
           </div>
           <Button type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save snapshot'}</Button>
         </form>
 
-        {error ? <div className="rounded-[20px] border border-red-400/20 bg-red-500/8 px-4 py-3 text-sm text-red-200">{error}</div> : null}
+        {error ? <div className="rounded-[20px] border border-red-400/20 bg-red-500/8 px-4 py-3 text-sm text-red-300">{error}</div> : null}
 
-        <div className="rounded-[28px] border border-[var(--border)] bg-[var(--surface-soft)] p-4 sm:p-5">
-          <div className="mb-3 flex flex-wrap items-center gap-5 text-xs text-[var(--muted)]">
-            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#c9a84c]" /> Followers</span>
-            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#2a6a73]" /> Engagement</span>
+        <div className="border-t border-[var(--line)] pt-5">
+          <div className="mb-4 flex flex-wrap items-center gap-5 text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
+            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[var(--gb-peach)]" /> Followers</span>
+            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[var(--gb-sage)]" /> Engagement</span>
           </div>
           <div className="overflow-x-auto">
             <svg viewBox="0 0 640 220" className="min-w-[520px] w-full">
               <rect x="0" y="0" width="640" height="220" fill="transparent" />
-              <line x1="16" y1="204" x2="624" y2="204" stroke="rgba(120,120,120,0.35)" strokeWidth="1" />
-              <line x1="16" y1="16" x2="16" y2="204" stroke="rgba(120,120,120,0.35)" strokeWidth="1" />
-              <TrendLine data={followersSeries} color="#c9a84c" yMin={yMin} yMax={yMax} />
-              <TrendLine data={engagementSeries} color="#2a6a73" yMin={yMin} yMax={yMax} />
+              <line x1="16" y1="204" x2="624" y2="204" stroke="rgba(120,120,120,0.28)" strokeWidth="1" />
+              <line x1="16" y1="16" x2="16" y2="204" stroke="rgba(120,120,120,0.28)" strokeWidth="1" />
+              <TrendLine data={followersSeries} color="#f3b58a" yMin={yMin} yMax={yMax} />
+              <TrendLine data={engagementSeries} color="#a7c6b4" yMin={yMin} yMax={yMax} />
             </svg>
           </div>
           {!entries.length ? <p className="mt-3 text-sm text-[var(--muted)]">No entries yet. Add your first snapshot above.</p> : null}
         </div>
 
         {entries.length > 0 ? (
-          <div className="rounded-[28px] border border-[var(--border)] bg-[var(--surface-soft)] p-4 sm:p-5">
+          <div className="border-t border-[var(--line)] pt-5">
             <div className="mb-2 text-xs uppercase tracking-[0.16em] text-[var(--muted)]">History ({entries.length})</div>
-            <div className="max-h-56 space-y-2 overflow-auto pr-1">
+            <div className="max-h-56 space-y-3 overflow-auto pr-1">
               {[...entries].reverse().map((entry) => (
-                <div key={`${entry.timestamp}-${entry.followers}-${entry.engagement}`} className="rounded-[20px] border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm">
+                <div key={`${entry.timestamp}-${entry.followers}-${entry.engagement}`} className="border-t border-[var(--line)] pt-3 text-sm">
                   <div className="text-xs text-[var(--muted)]">{new Date(entry.timestamp).toLocaleString()}</div>
                   <div className="mt-1 text-[var(--muted-strong)]">Followers: <span className="font-semibold">{entry.followers.toLocaleString()}</span> · Engagement: <span className="font-semibold">{entry.engagement}%</span></div>
                 </div>
