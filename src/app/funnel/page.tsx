@@ -87,7 +87,7 @@ export default function FunnelPage() {
         description="Offer performance is framed as health now: where conversations open, where curiosity deepens, and where purchases actually happen."
         right={
           <div className="soft-well rounded-[28px] border border-[var(--border)] px-5 py-4 text-sm">
-            <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Overall conversion</div>
+            <div className="ui-label">Overall conversion</div>
             <div className="mt-2 text-3xl font-semibold text-[var(--foreground)]">{pct(totals.purchases, totals.clicks)}%</div>
           </div>
         }
@@ -107,8 +107,8 @@ export default function FunnelPage() {
             return (
               <section key={r.keyword} className="grid gap-6 border-t border-[var(--line)] pt-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:items-start">
                 <div>
-                  <div className="text-xs uppercase tracking-[0.24em] text-[var(--muted)]">0{index + 1} · offer keyword</div>
-                  <div className="mt-3 font-serif-ui text-[2.6rem] leading-none text-[var(--foreground)]">{r.keyword}</div>
+                  <div className="ui-label">0{index + 1} · offer keyword</div>
+                  <div className="mt-3 text-[2.6rem] leading-none text-[var(--foreground)]">{r.keyword}</div>
                   <div className="mt-4 inline-flex rounded-full border border-[var(--border)] bg-[var(--chip-bg)] px-3 py-1.5 text-xs font-semibold tracking-[0.08em] text-[var(--foreground)]">
                     {conversion}% conversion
                   </div>
@@ -117,15 +117,15 @@ export default function FunnelPage() {
                 <div className="space-y-5">
                   <div className="grid gap-3 sm:grid-cols-3">
                     <div>
-                      <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Triggers</div>
+                      <div className="mb-2 ui-label">Triggers</div>
                       <TextInput type="number" value={d?.trigger_count ?? String(r.trigger_count)} onChange={(v) => setDraft((prev) => ({ ...prev, [r.keyword]: { ...prev[r.keyword], trigger_count: v } }))} />
                     </div>
                     <div>
-                      <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Clicks</div>
+                      <div className="mb-2 ui-label">Clicks</div>
                       <TextInput type="number" value={d?.clicks ?? String(r.clicks)} onChange={(v) => setDraft((prev) => ({ ...prev, [r.keyword]: { ...prev[r.keyword], clicks: v } }))} />
                     </div>
                     <div>
-                      <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Purchases</div>
+                      <div className="mb-2 ui-label">Purchases</div>
                       <TextInput type="number" value={d?.purchases ?? String(r.purchases)} onChange={(v) => setDraft((prev) => ({ ...prev, [r.keyword]: { ...prev[r.keyword], purchases: v } }))} />
                     </div>
                   </div>

@@ -104,7 +104,7 @@ export default function OperationsPage() {
         description="Operations is framed as care now: watch the systems supporting your work, respond early, and keep the backstage smooth enough that the front stage can stay elegant."
         right={
           <div className="soft-well rounded-[28px] border border-[var(--border)] px-5 py-4">
-            <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Current status</div>
+            <div className="ui-label">Current status</div>
             <div className="mt-2 text-3xl font-semibold text-[var(--foreground)]">{health}</div>
           </div>
         }
@@ -120,15 +120,15 @@ export default function OperationsPage() {
         <Card title="Business health inputs" subtitle={rollup?.updated_at ? `Last updated ${new Date(rollup.updated_at).toLocaleString()}` : 'Update the current health numbers.'} right={<Button onClick={saveRollup}>Save</Button>}>
           <div className="grid gap-4 md:grid-cols-3">
             <div>
-              <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Zapier success</div>
+              <div className="mb-2 ui-label">Zapier success</div>
               <TextInput type="number" value={zapierSuccess} onChange={setZapierSuccess} />
             </div>
             <div>
-              <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Zapier fail</div>
+              <div className="mb-2 ui-label">Zapier fail</div>
               <TextInput type="number" value={zapierFail} onChange={setZapierFail} />
             </div>
             <div>
-              <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Delivery errors</div>
+              <div className="mb-2 ui-label">Delivery errors</div>
               <TextInput type="number" value={deliveryErrors} onChange={setDeliveryErrors} />
             </div>
           </div>
@@ -137,12 +137,12 @@ export default function OperationsPage() {
         <Card title="Log an alert" subtitle="Fast input. Minimal drama.">
           <div className="space-y-5">
             <div>
-              <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Severity</div>
+              <div className="ui-label">Severity</div>
               <div className="mt-3 grid grid-cols-3 gap-2">
                 {(['info', 'warn', 'critical'] as const).map((s) => (
                   <button
                     key={s}
-                    className={`rounded-[18px] border px-3 py-2 text-sm font-semibold uppercase transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60 ${newSev === s ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]' : 'border-transparent bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
+                    className={`rounded-[18px] border px-3 py-2 text-sm font-semibold uppercase transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-amber)]/60 ${newSev === s ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]' : 'border-transparent bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
                     onClick={() => setNewSev(s)}
                   >
                     {s}
@@ -152,7 +152,7 @@ export default function OperationsPage() {
             </div>
 
             <div>
-              <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Message</div>
+              <div className="mb-2 ui-label">Message</div>
               <TextInput value={newMsg} onChange={setNewMsg} placeholder="What needs attention?" />
             </div>
 
@@ -172,7 +172,7 @@ export default function OperationsPage() {
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className={badge(a.severity)}>{a.severity}</span>
-                  {a.resolved === 1 ? <span className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">resolved</span> : null}
+                  {a.resolved === 1 ? <span className="ui-label">resolved</span> : null}
                 </div>
                 <div className="mt-3 text-sm leading-7 text-[var(--muted-strong)]">{a.message}</div>
                 <div className="mt-2 text-xs text-[var(--muted)]">{new Date(a.created_at).toLocaleString()}</div>

@@ -151,7 +151,7 @@ export default function TodayPage() {
         right={
           <div className="soft-well rounded-[30px] border border-[var(--border)] p-5">
             <div className="eyebrow">Chosen invitation</div>
-            <div className="mt-3 truncate font-serif-ui text-3xl text-[var(--foreground)]">{picked || 'Not chosen yet'}</div>
+            <div className="mt-3 truncate text-3xl text-[var(--foreground)]">{picked || 'Not chosen yet'}</div>
             <div className="mt-4 flex gap-2">
               <Button onClick={pickKeyword} disabled={!activeKeywords.length}>Choose</Button>
               <Button variant="ghost" onClick={() => setPicked('')}>Clear</Button>
@@ -170,10 +170,10 @@ export default function TodayPage() {
         <Card title="Focus window" subtitle="Use this immediately after posting, while the conversation is still warm.">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_180px] lg:items-end">
             <div className="border-t border-[var(--line)] pt-5">
-              <div className="text-[11px] uppercase tracking-[0.28em] text-[var(--muted)]">Time remaining</div>
+              <div className="ui-label">Time remaining</div>
               <div className="mt-4 font-mono text-[4.25rem] leading-none text-[var(--foreground)] sm:text-[5.6rem]">{fmt(remaining)}</div>
               <p className="mt-4 max-w-xl text-sm leading-7 text-[var(--muted)]">
-                {picked ? <>This session is anchored to <span className="font-semibold text-[var(--gb-berry)]">{picked}</span>.</> : 'Tip: choose a CTA phrase first so the session carries a clear intention.'}
+                {picked ? <>This session is anchored to <span className="font-semibold text-[var(--gb-amber)]">{picked}</span>.</> : 'Tip: choose a CTA phrase first so the session carries a clear intention.'}
               </p>
             </div>
             <div className="flex gap-2 lg:flex-col lg:items-stretch">
@@ -190,7 +190,7 @@ export default function TodayPage() {
               {keywords.map((k) => (
                 <button
                   key={k.id}
-                  className={`rounded-full border px-3.5 py-2 text-xs font-semibold tracking-[0.08em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60 ${k.active ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]' : 'border-transparent bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
+                  className={`rounded-full border px-3.5 py-2 text-xs font-semibold tracking-[0.08em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-amber)]/60 ${k.active ? 'border-[var(--border)] bg-[var(--surface-soft)] text-[var(--foreground)]' : 'border-transparent bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
                   onClick={async () => {
                     const res = await fetch('/api/cta-keywords', {
                       method: 'POST',
@@ -211,7 +211,7 @@ export default function TodayPage() {
             </div>
 
             <div className="data-ribbon pt-5">
-              <div className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Currently active</div>
+              <div className="ui-label">Currently active</div>
               <div className="mt-3 flex flex-wrap gap-2">
                 {activeKeywords.length ? activeKeywords.map((k) => <span key={k} className="rounded-full border border-[var(--border)] bg-[var(--chip-bg)] px-3 py-1 text-xs font-semibold text-[var(--foreground)]">{k}</span>) : <span className="text-sm text-[var(--muted)]">No active CTA keywords yet.</span>}
               </div>
@@ -225,9 +225,9 @@ export default function TodayPage() {
           <div className="grid gap-3">
             {items.map((it, index) => (
               <label key={it.id} className="grid cursor-pointer gap-3 border-t border-[var(--line)] py-4 sm:grid-cols-[40px_minmax(0,1fr)]">
-                <div className="flex items-start justify-center pt-1 text-xs uppercase tracking-[0.2em] text-[var(--muted)]">{String(index + 1).padStart(2, '0')}</div>
+                <div className="flex items-start justify-center pt-1 ui-label">{String(index + 1).padStart(2, '0')}</div>
                 <div className="flex items-start gap-3">
-                  <input type="checkbox" className="mt-1 accent-[var(--gb-peach)]" checked={it.done === 1} onChange={(e) => toggle(it.id, e.target.checked)} />
+                  <input type="checkbox" className="mt-1 accent-[var(--gb-amber)]" checked={it.done === 1} onChange={(e) => toggle(it.id, e.target.checked)} />
                   <div className={`text-sm leading-7 ${it.done ? 'line-through text-[var(--muted)]' : 'text-[var(--muted-strong)]'}`}>{it.label}</div>
                 </div>
               </label>

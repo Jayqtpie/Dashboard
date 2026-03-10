@@ -97,11 +97,11 @@ export default function InstagramStatsInput() {
       <div className="space-y-8">
         <form onSubmit={onSubmit} className="grid gap-3 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
           <div>
-            <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Followers</div>
+            <div className="mb-2 ui-label">Followers</div>
             <TextInput type="number" value={followers} onChange={setFollowers} placeholder="e.g. 12500" />
           </div>
           <div>
-            <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Engagement (%)</div>
+            <div className="mb-2 ui-label">Engagement (%)</div>
             <TextInput type="number" value={engagement} onChange={setEngagement} placeholder="e.g. 4.8" />
           </div>
           <Button type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save snapshot'}</Button>
@@ -110,9 +110,9 @@ export default function InstagramStatsInput() {
         {error ? <div className="rounded-[20px] border border-red-400/20 bg-red-500/8 px-4 py-3 text-sm text-red-300">{error}</div> : null}
 
         <div className="border-t border-[var(--line)] pt-5">
-          <div className="mb-4 flex flex-wrap items-center gap-5 text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
-            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[var(--gb-peach)]" /> Followers</span>
-            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[var(--gb-sage)]" /> Engagement</span>
+          <div className="mb-4 flex flex-wrap items-center gap-5 ui-label">
+            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[var(--gb-amber)]" /> Followers</span>
+            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[var(--gb-green)]" /> Engagement</span>
           </div>
           <div className="overflow-x-auto">
             <svg viewBox="0 0 640 220" className="min-w-[520px] w-full">
@@ -128,7 +128,7 @@ export default function InstagramStatsInput() {
 
         {entries.length > 0 ? (
           <div className="border-t border-[var(--line)] pt-5">
-            <div className="mb-2 text-xs uppercase tracking-[0.16em] text-[var(--muted)]">History ({entries.length})</div>
+            <div className="mb-2 ui-label">History ({entries.length})</div>
             <div className="max-h-56 space-y-3 overflow-auto pr-1">
               {[...entries].reverse().map((entry) => (
                 <div key={`${entry.timestamp}-${entry.followers}-${entry.engagement}`} className="border-t border-[var(--line)] pt-3 text-sm">

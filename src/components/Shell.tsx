@@ -8,7 +8,7 @@ import { Button, NavLink } from '@/components/ui';
 type ThemeMode = 'light' | 'dark';
 
 const tabs = [
-  { href: '/', label: 'War room', detail: 'Founder overview and weekly direction' },
+  { href: '/', label: 'Overview', detail: 'Founder priorities and weekly direction' },
   { href: '/today', label: 'Today', detail: 'Ship, engage, finish the essentials' },
   { href: '/growth', label: 'Signal', detail: 'Numbers, hooks, and review decisions' },
   { href: '/funnel', label: 'Offers', detail: 'Trigger, click, purchase conversion' },
@@ -54,8 +54,8 @@ export default function Shell({ children }: { children: ReactNode }) {
                 <div className="eyebrow">GuidedBarakah · founder command center</div>
                 <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] lg:items-end">
                   <div>
-                    <Link href="/" className="block text-[2rem] font-semibold leading-[0.92] tracking-[-0.045em] text-[var(--foreground)] sm:text-[2.85rem] lg:text-[3.4rem]">
-                      Founder war room
+                    <Link href="/" className="block text-[1.85rem] font-semibold leading-[0.98] tracking-[-0.03em] text-[var(--foreground)] sm:text-[2.35rem] lg:text-[2.9rem]">
+                      Founder operating surface
                     </Link>
                     <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)] sm:text-[15px]">
                       Flat architecture. Hard priorities. Live signal. One place to decide what matters and move.
@@ -63,15 +63,15 @@ export default function Shell({ children }: { children: ReactNode }) {
                   </div>
                   <div className="grid gap-3 border-t border-[var(--line)] pt-3 text-sm text-[var(--muted)] lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
                     <div className="flex items-center justify-between gap-4 border-b border-[var(--line-soft)] pb-2">
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">Operating mode</span>
+                      <span className="ui-label">Operating mode</span>
                       <span className="text-[var(--muted-strong)]">{theme === 'dark' ? 'After hours' : 'Daylight review'}</span>
                     </div>
                     <div className="flex items-center justify-between gap-4 border-b border-[var(--line-soft)] pb-2">
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">Principle</span>
+                      <span className="ui-label">Principle</span>
                       <span className="text-right text-[var(--muted-strong)]">Barakah over noise</span>
                     </div>
                     <div className="flex items-center justify-between gap-4">
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">Theme</span>
+                      <span className="ui-label">Theme</span>
                       <Button variant="outline" onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}>
                         {theme === 'dark' ? 'Light' : 'Dark'}
                       </Button>
@@ -96,7 +96,7 @@ export default function Shell({ children }: { children: ReactNode }) {
         <main id="main" className="page-shell min-w-0">
           <div className="mx-auto max-w-[1360px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
             {children}
-            <footer className="mt-12 border-t border-[var(--line)] py-4 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">
+            <footer className="mt-12 border-t border-[var(--line)] py-4 text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
               GuidedBarakah workspace · founder cadence · deliberate systems
             </footer>
           </div>

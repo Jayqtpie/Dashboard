@@ -141,7 +141,7 @@ export default function GrowthPage() {
                 if (Number.isNaN(next)) return;
                 updateMetric(m.key, next);
               }}
-              className="group border-t border-[var(--line)] pt-5 text-left transition hover:translate-y-[-2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60"
+              className="group border-t border-[var(--line)] pt-5 text-left transition hover:translate-y-[-2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-amber)]/60"
             >
               <div className="text-sm font-medium text-[var(--foreground)]">{m.label}</div>
               <div className="mt-4 text-4xl font-semibold leading-none text-[var(--foreground)]">
@@ -150,7 +150,7 @@ export default function GrowthPage() {
               </div>
               <div className="mt-4 flex items-center justify-between gap-3 text-xs text-[var(--muted)]">
                 <span>Updated {new Date(m.updated_at).toLocaleString()}</span>
-                <span className="font-semibold text-[var(--gb-berry)] group-hover:text-[var(--foreground)]">Edit</span>
+                <span className="font-semibold text-[var(--gb-amber)] group-hover:text-[var(--foreground)]">Edit</span>
               </div>
             </button>
           ))}
@@ -169,7 +169,7 @@ export default function GrowthPage() {
                 <button
                   key={f.key}
                   onClick={() => setCopyFilter(f.key)}
-                  className={`min-h-10 rounded-full px-4 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60 ${copyFilter === f.key ? 'bg-[var(--surface-soft)] text-[var(--foreground)]' : 'bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
+                  className={`min-h-10 rounded-full px-4 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-amber)]/60 ${copyFilter === f.key ? 'bg-[var(--surface-soft)] text-[var(--foreground)]' : 'bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
                 >
                   {f.label}
                 </button>
@@ -183,7 +183,7 @@ export default function GrowthPage() {
                   <div className="space-y-3">
                     {visibleHooks.map((h) => (
                       <div key={h.id} className="border-t border-[var(--line)] pt-4">
-                        <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Confidence score {h.score}/10</div>
+                        <div className="ui-label">Confidence score {h.score}/10</div>
                         <div className="mt-2 text-sm leading-7 text-[var(--muted-strong)]">{h.text}</div>
                       </div>
                     ))}
@@ -207,7 +207,7 @@ export default function GrowthPage() {
                   <div className="space-y-3">
                     {visibleCtas.map((c) => (
                       <div key={c.id} className="border-t border-[var(--line)] pt-4">
-                        <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Confidence score {c.score}/10</div>
+                        <div className="ui-label">Confidence score {c.score}/10</div>
                         <div className="mt-2 text-sm leading-7 text-[var(--muted-strong)]">{c.text}</div>
                       </div>
                     ))}
@@ -235,7 +235,7 @@ export default function GrowthPage() {
                 ['test', 'Test', 'Run one small experiment at a time.'],
               ] as const).map(([key, title, desc]) => (
                 <section key={key} className="border-t border-[var(--line)] pt-5">
-                  <div className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">{title}</div>
+                  <div className="ui-label">{title}</div>
                   <p className="mt-2 text-sm leading-7 text-[var(--muted)]">{desc}</p>
                   <ul className="mt-4 space-y-3">
                     {byKind[key].map((n) => (
@@ -253,13 +253,13 @@ export default function GrowthPage() {
           <Card title="Quick capture" subtitle="Write the learning before it evaporates.">
             <div className="space-y-5">
               <div>
-                <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Category</div>
+                <div className="ui-label">Category</div>
                 <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1">
                   {(['do_more', 'stop', 'test'] as const).map((k) => (
                     <button
                       key={k}
                       onClick={() => setNewNoteKind(k)}
-                      className={`min-h-11 rounded-[18px] px-3 py-2.5 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-peach)]/60 ${newNoteKind === k ? 'bg-[var(--surface-soft)] text-[var(--foreground)]' : 'bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
+                      className={`min-h-11 rounded-[18px] px-3 py-2.5 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-amber)]/60 ${newNoteKind === k ? 'bg-[var(--surface-soft)] text-[var(--foreground)]' : 'bg-[var(--interactive-soft)] text-[var(--muted)] hover:bg-[var(--interactive-soft-hover)]'}`}
                     >
                       {kindLabel(k)}
                     </button>
@@ -268,7 +268,7 @@ export default function GrowthPage() {
               </div>
 
               <div>
-                <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Note</div>
+                <div className="ui-label">Note</div>
                 <div className="mt-3">
                   <TextArea value={newNote} onChange={setNewNote} placeholder="What did you learn, notice, or want to test next?" />
                 </div>

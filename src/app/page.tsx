@@ -15,7 +15,7 @@ const priorities = [
     title: 'Read live signal fast',
     body: 'Check metrics, saved hooks, and decision notes in one pass so the next move comes from evidence instead of vibes.',
     href: '/growth',
-    cta: 'Review growth signal',
+    cta: 'Review signal',
     metric: '02',
   },
   {
@@ -29,7 +29,7 @@ const priorities = [
     title: 'Catch ops before drift',
     body: 'Track failures, automation reliability, and cleanup work before backstage problems reach the customer-facing story.',
     href: '/ops-health',
-    cta: 'Check operations',
+    cta: 'Check ops',
     metric: '04',
   },
 ];
@@ -51,13 +51,13 @@ export default function Home() {
   return (
     <div className="space-y-10">
       <PageHeader
-        eyebrow="War room"
+        eyebrow="Overview"
         title="Run GuidedBarakah from one clear operating surface"
         description="A founder overview for priorities, live signal, execution rhythm, and the queues that actually move the business. Flat architecture. Hard dividers. No decorative layers."
         right={
           <div className="space-y-3 text-sm leading-6 text-[var(--muted)]">
             <div className="eyebrow">Current stance</div>
-            <div className="border-t border-[var(--line)] pt-3 text-2xl font-semibold leading-tight text-[var(--foreground)]">Clarity before scale.</div>
+            <div className="border-t border-[var(--line)] pt-3 text-[1.6rem] font-semibold leading-tight text-[var(--foreground)]">Clarity before scale.</div>
             <p>Use the workspace to make decisions quickly, keep momentum visible, and stop hiding real priorities inside decorative UI shells.</p>
           </div>
         }
@@ -75,7 +75,7 @@ export default function Home() {
           <div>
             <div className="mb-5 border-b border-[var(--line)] pb-5">
               <div className="eyebrow">Priority lanes</div>
-              <h2 className="mt-3 text-[1.85rem] font-semibold leading-[0.96] tracking-[-0.04em] text-[var(--foreground)] sm:text-[2.6rem]">The four lanes that run the week</h2>
+              <h2 className="mt-3 text-[1.55rem] font-semibold leading-[1.02] tracking-[-0.02em] text-[var(--foreground)] sm:text-[1.95rem]">The four lanes that run the week</h2>
             </div>
             <div>
               {priorities.map((item) => (
@@ -84,12 +84,12 @@ export default function Home() {
                   href={item.href}
                   className="group grid gap-4 border-b border-[var(--line)] py-5 transition hover:bg-[var(--surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gb-amber)] sm:grid-cols-[70px_minmax(0,1fr)_auto] sm:items-start sm:px-3"
                 >
-                  <div className="text-[1.4rem] font-semibold leading-none tracking-[-0.03em] text-[var(--muted)] sm:text-[1.7rem]">{item.metric}</div>
+                  <div className="text-[1.2rem] font-semibold leading-none tracking-[-0.02em] text-[var(--muted)] sm:text-[1.4rem]">{item.metric}</div>
                   <div>
-                    <div className="text-lg font-semibold leading-tight tracking-[-0.02em] text-[var(--foreground)] sm:text-[1.25rem]">{item.title}</div>
+                    <div className="text-base font-semibold leading-tight tracking-[-0.01em] text-[var(--foreground)] sm:text-[1.1rem]">{item.title}</div>
                     <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--muted)]">{item.body}</p>
                   </div>
-                  <div className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--gb-amber)] sm:pt-1">{item.cta}</div>
+                  <div className="ui-label sm:pt-1">{item.cta}</div>
                 </Link>
               ))}
             </div>
@@ -100,7 +100,7 @@ export default function Home() {
             <div className="mt-3 space-y-3">
               {briefs.map(([label, body]) => (
                 <div key={label} className="border-b border-[var(--line)] pb-4">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">{label}</div>
+                  <div className="ui-label">{label}</div>
                   <p className="mt-2 text-sm leading-7 text-[var(--muted-strong)]">{body}</p>
                 </div>
               ))}
@@ -114,16 +114,16 @@ export default function Home() {
           <div>
             <div className="border-b border-[var(--line)] pb-5">
               <div className="eyebrow">System shift</div>
-              <h2 className="mt-3 text-[1.65rem] font-semibold leading-[0.98] tracking-[-0.035em] text-[var(--foreground)] sm:text-[2.2rem]">What changed in the redesign</h2>
+              <h2 className="mt-3 text-[1.45rem] font-semibold leading-[1.04] tracking-[-0.02em] text-[var(--foreground)] sm:text-[1.8rem]">What changed in the redesign</h2>
             </div>
             <div className="mt-4 space-y-0">
               {[
                 'The old dashboard shell is gone. The homepage now behaves like an operating document with full-width structure and visible hierarchy.',
                 'Priority navigation, metrics, and command context now live in rows and rails rather than cards stacked inside cards.',
-                'Typography does the heavy lifting: big headlines, compact labels, and inline evidence instead of decorative containers.',
+                'Typography now stays in one calmer system: measured headlines, compact labels, and inline evidence instead of decorative treatment.',
               ].map((text, index) => (
                 <div key={text} className="grid gap-3 border-b border-[var(--line)] py-4 sm:grid-cols-[40px_minmax(0,1fr)]">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">0{index + 1}</div>
+                  <div className="ui-label">0{index + 1}</div>
                   <p className="text-sm leading-7 text-[var(--muted-strong)]">{text}</p>
                 </div>
               ))}
@@ -133,12 +133,12 @@ export default function Home() {
           <div>
             <div className="border-b border-[var(--line)] pb-5">
               <div className="eyebrow">Weekly rhythm</div>
-              <h2 className="mt-3 text-[1.65rem] font-semibold leading-[0.98] tracking-[-0.035em] text-[var(--foreground)] sm:text-[2.2rem]">How to use the war room</h2>
+              <h2 className="mt-3 text-[1.45rem] font-semibold leading-[1.04] tracking-[-0.02em] text-[var(--foreground)] sm:text-[1.8rem]">How to use the workspace</h2>
             </div>
             <div className="mt-4 space-y-0">
               {rhythms.map(([label, body]) => (
                 <div key={label} className="grid gap-3 border-b border-[var(--line)] py-4 sm:grid-cols-[150px_minmax(0,1fr)]">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">{label}</div>
+                  <div className="ui-label">{label}</div>
                   <p className="text-sm leading-7 text-[var(--muted-strong)]">{body}</p>
                 </div>
               ))}
