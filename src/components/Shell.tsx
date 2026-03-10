@@ -1,10 +1,19 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button, NavLink } from '@/components/ui';
 
 type ThemeMode = 'light' | 'dark';
+
+const tabs = [
+  { href: '/', label: 'Home', detail: 'Your workspace overview' },
+  { href: '/today', label: 'Today', detail: 'Daily rhythm and focus' },
+  { href: '/growth', label: 'Growth', detail: 'Signals, copy, and notes' },
+  { href: '/funnel', label: 'Offers', detail: 'Keyword and conversion flow' },
+  { href: '/ops-health', label: 'Care', detail: 'Operations and reliability' },
+];
 
 export default function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -28,104 +37,96 @@ export default function Shell({ children }: { children: ReactNode }) {
     } catch {}
   }, [theme]);
 
-  function toggleTheme() {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  }
-
-  const tabs = [
-    { href: '/today', label: 'Today' },
-    { href: '/growth', label: 'Growth' },
-    { href: '/funnel', label: 'Funnel' },
-    { href: '/ops-health', label: 'Operations' },
-  ];
-
   return (
     <div className="min-h-screen">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-[var(--gb-teal)] focus:px-3 focus:py-2 focus:text-sm focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[var(--gb-teal)] focus:px-4 focus:py-2 focus:text-sm focus:text-white"
       >
         Skip to content
       </a>
 
-      <div className="mx-auto w-full max-w-[1500px] px-4 pb-10 pt-4 sm:px-6 lg:px-8 lg:pt-6">
-        <header className="theme-fade rounded-[32px] border border-[var(--border)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--surface)_92%,white_8%),var(--surface))] p-4 shadow-[var(--shadow-card)] sm:p-6 lg:p-7">
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
-            <div className="space-y-5">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div className="max-w-3xl">
-                  <p className="eyebrow">GuidedBarakah workspace</p>
-                  <h1 className="serif-display mt-3 text-3xl leading-tight text-[var(--foreground)] sm:text-4xl">
-                    Build with clarity. Grow with barakah.
-                  </h1>
-                  <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)] sm:text-base">
-                    A calmer operating space for today&apos;s work, growth review, funnel visibility, and business health — designed to support steady progress over hustle.
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1 text-xs font-semibold tracking-[0.14em] text-[var(--muted-strong)]">
-                    Premium refresh
-                  </span>
-                  <Button variant="outline" onClick={toggleTheme}>
-                    {theme === 'dark' ? 'Light' : 'Dark'} mode
-                  </Button>
-                </div>
-              </div>
-
-              <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_280px] xl:items-start">
-                <nav className="theme-fade rounded-[26px] border border-[var(--border)] bg-[var(--surface-soft)] p-2.5">
-                  <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-                    {tabs.map((t) => (
-                      <NavLink key={t.href} href={t.href} label={t.label} active={pathname === t.href} />
-                    ))}
-                  </div>
-                </nav>
-
-                <div className="motif-panel rounded-[26px] border border-[var(--border)] bg-[linear-gradient(135deg,color-mix(in_srgb,var(--gb-gold)_10%,var(--surface)_90%),color-mix(in_srgb,var(--gb-teal)_10%,var(--surface-soft)_90%))] p-4 text-[var(--foreground)]">
-                  <div className="eyebrow">Guiding principle</div>
-                  <div className="serif-display mt-2 text-2xl text-[var(--foreground)]">Barakah over hustle</div>
-                  <p className="mt-2 pr-12 text-sm leading-6 text-[var(--muted)]">
-                    Tight alignment, gentle hierarchy, and practical data capture without the command-center noise.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
-          <main id="main" className="min-w-0">
-            {children}
-          </main>
-
-          <aside className="hidden xl:block">
-            <div className="sticky top-6 space-y-4">
-              <section className="theme-fade rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-card)]">
-                <div className="eyebrow">Workspace</div>
-                <div className="serif-display mt-2 text-2xl text-[var(--foreground)]">Local-first foundation</div>
+      <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-4 sm:px-6 lg:px-8 lg:pt-6">
+        <div className="grid gap-6 xl:grid-cols-[290px_minmax(0,1fr)]">
+          <aside className="xl:sticky xl:top-6 xl:h-[calc(100vh-3rem)]">
+            <div className="panel flex h-full flex-col rounded-[36px] p-4 sm:p-5">
+              <div className="ornament-divider pb-5">
+                <div className="eyebrow">GuidedBarakah</div>
+                <Link href="/" className="mt-3 block font-serif-ui text-3xl leading-tight text-[var(--foreground)]">
+                  Creator workspace
+                </Link>
                 <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                  Your data stays close: fast edits, predictable writes, and a grounded workflow built on local persistence.
+                  A quieter home for Muslim creators and entrepreneurs building with intention.
                 </p>
-                <code className="mt-4 block rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-2.5 text-xs text-[var(--muted-strong)]">
-                  data/guidedbarakah.sqlite
-                </code>
-              </section>
+              </div>
 
-              <section className="theme-fade rounded-[28px] border border-[var(--border)] bg-[linear-gradient(145deg,var(--shell-release-from),var(--shell-release-to))] p-5 text-[var(--gb-cream)] shadow-[var(--shadow-card)]">
-                <div className="eyebrow !text-[rgba(250,240,230,0.72)]">Design note</div>
-                <div className="serif-display mt-2 text-2xl">Fresh premium pass</div>
-                <p className="mt-3 text-sm leading-6 text-[rgba(250,240,230,0.84)]">
-                  Softer surfaces, stronger brand color, and a more editorial rhythm across the dashboard.
+              <nav className="mt-5 space-y-2">
+                {tabs.map((tab) => (
+                  <NavLink
+                    key={tab.href}
+                    href={tab.href}
+                    label={tab.label}
+                    detail={tab.detail}
+                    active={pathname === tab.href}
+                  />
+                ))}
+              </nav>
+
+              <div className="mt-5 rounded-[28px] border border-[var(--border)] bg-[linear-gradient(145deg,color-mix(in_srgb,var(--gb-gold)_12%,var(--surface)_88%),color-mix(in_srgb,var(--gb-teal)_12%,var(--surface-soft)_88%))] p-4">
+                <div className="eyebrow">Guiding principle</div>
+                <div className="mt-2 font-serif-ui text-2xl text-[var(--foreground)]">Barakah over hustle</div>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                  Choose clarity, protect your energy, and let the workspace feel supportive rather than loud.
                 </p>
-              </section>
+              </div>
+
+              <div className="mt-auto space-y-4 pt-5">
+                <div className="rounded-[28px] border border-[var(--border)] bg-[var(--surface-soft)] p-4">
+                  <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Theme</div>
+                  <div className="mt-3 flex items-center justify-between gap-3">
+                    <div className="text-sm text-[var(--muted-strong)]">{theme === 'dark' ? 'Evening mode' : 'Day mode'}</div>
+                    <Button variant="outline" onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}>
+                      {theme === 'dark' ? 'Light' : 'Dark'}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="rounded-[28px] bg-[var(--shell-release-from)] px-4 py-5 text-[var(--gb-cream)]">
+                  <div className="text-xs uppercase tracking-[0.18em] text-[rgba(250,240,230,0.72)]">Built around</div>
+                  <div className="mt-2 font-serif-ui text-2xl">Steady work</div>
+                  <p className="mt-2 text-sm leading-6 text-[rgba(250,240,230,0.82)]">
+                    Today, growth, offers, and business care—organized as one coherent practice.
+                  </p>
+                </div>
+              </div>
             </div>
           </aside>
-        </div>
 
-        <footer className="mt-8 border-t border-[var(--border)] pt-4 text-xs tracking-[0.12em] text-[var(--muted)] uppercase">
-          GuidedBarakah dashboard · local-first SQLite · calmer execution layer
-        </footer>
+          <main id="main" className="min-w-0 space-y-6">
+            <header className="panel rounded-[36px] px-5 py-5 sm:px-6 lg:px-8">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <div className="eyebrow">Workspace</div>
+                  <div className="mt-2 font-serif-ui text-[2rem] leading-tight text-[var(--foreground)] sm:text-[2.4rem]">
+                    Build with calm confidence.
+                  </div>
+                  <p className="mt-2 max-w-3xl text-sm leading-7 text-[var(--muted)] sm:text-base">
+                    A more spacious, editorial home for your daily rhythm, audience learning, offer health, and operational care.
+                  </p>
+                </div>
+                <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-2 text-sm text-[var(--muted-strong)]">
+                  Local-first workspace
+                </div>
+              </div>
+            </header>
+
+            {children}
+
+            <footer className="px-2 pb-2 text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
+              GuidedBarakah workspace · grounded systems · premium calm
+            </footer>
+          </main>
+        </div>
       </div>
     </div>
   );

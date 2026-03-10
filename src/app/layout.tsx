@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'GuidedBarakah Dashboard',
-  description: 'A local-first GuidedBarakah workspace for today, growth, funnel visibility, and operations.',
+  title: 'GuidedBarakah Workspace',
+  description: 'A local-first GuidedBarakah workspace for Muslim creators and entrepreneurs building with clarity and barakah.',
 };
 
 export default function RootLayout({
