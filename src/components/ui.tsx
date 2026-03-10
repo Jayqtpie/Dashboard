@@ -46,7 +46,7 @@ export function PageHeader({
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
         <div className="min-w-0 max-w-5xl">
           <div className="eyebrow">{eyebrow}</div>
-          <h1 className="mt-4 max-w-5xl text-[2.15rem] font-semibold leading-[0.98] tracking-[-0.03em] text-[var(--foreground)] sm:text-[2.8rem] lg:text-[3.45rem]">{title}</h1>
+          <h1 className="mt-4 max-w-5xl text-[1.9rem] font-semibold leading-[1] tracking-[-0.025em] text-[var(--foreground)] sm:text-[2.45rem] lg:text-[3rem]">{title}</h1>
           <p className="mt-4 max-w-3xl text-[15px] leading-7 text-[var(--muted)] sm:text-base">{description}</p>
         </div>
         {right ? <div className="relative z-10 border-l border-[var(--line)] pl-0 lg:pl-6">{right}</div> : null}
