@@ -8,17 +8,17 @@ import { Button, NavLink } from '@/components/ui';
 type ThemeMode = 'light' | 'dark';
 
 const tabs = [
-  { href: '/', label: 'World', detail: 'Orientation and weekly cadence' },
-  { href: '/today', label: 'Today', detail: 'Publish, engage, stay deliberate' },
-  { href: '/growth', label: 'Signal', detail: 'Metrics, copy, and decisions' },
-  { href: '/funnel', label: 'Offers', detail: 'Interest, clicks, and purchases' },
-  { href: '/ops-health', label: 'Care', detail: 'Reliability, issues, and calm' },
+  { href: '/', label: 'War room', detail: 'Founder overview and weekly direction' },
+  { href: '/today', label: 'Today', detail: 'Ship, engage, finish the essentials' },
+  { href: '/growth', label: 'Signal', detail: 'Numbers, hooks, and review decisions' },
+  { href: '/funnel', label: 'Offers', detail: 'Trigger, click, purchase conversion' },
+  { href: '/ops-health', label: 'Ops', detail: 'Reliability, failures, and cleanup' },
 ];
 
 export default function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [theme, setTheme] = useState<ThemeMode>(() => {
-    if (typeof document === 'undefined') return 'light';
+    if (typeof document === 'undefined') return 'dark';
     const current = document.documentElement.getAttribute('data-theme');
     if (current === 'dark' || current === 'light') return current;
 
@@ -41,82 +41,66 @@ export default function Shell({ children }: { children: ReactNode }) {
     <div className="min-h-screen">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[var(--gb-berry)] focus:px-4 focus:py-2 focus:text-sm focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border focus:border-[var(--foreground)] focus:bg-[var(--background)] focus:px-4 focus:py-2 focus:text-sm focus:text-[var(--foreground)]"
       >
         Skip to content
       </a>
 
-      <div className="mx-auto max-w-[1480px] px-4 pb-10 pt-4 sm:px-6 lg:px-8 lg:pt-6">
-        <div className="editorial-frame rounded-[40px] px-5 py-5 sm:px-7 sm:py-7 lg:px-10 lg:py-10">
-          <div className="grid gap-8 xl:grid-cols-[280px_minmax(0,1fr)] xl:gap-12">
-            <aside className="xl:sticky xl:top-6 xl:self-start">
-              <div className="space-y-8">
-                <div>
-                  <div className="eyebrow">GuidedBarakah</div>
-                  <Link href="/" className="mt-4 block font-serif-ui text-[2.6rem] leading-[0.92] text-[var(--foreground)] sm:text-[3.1rem]">
-                    Command center,
-                    <br />
-                    reincarnated.
-                  </Link>
-                  <p className="mt-4 max-w-xs text-sm leading-7 text-[var(--muted)]">
-                    Less dashboard cosplay. More brand world, rhythm, and conviction for Muslim creators building serious work.
-                  </p>
-                </div>
-
-                <nav className="space-y-4">
-                  {tabs.map((tab) => (
-                    <NavLink key={tab.href} href={tab.href} label={tab.label} detail={tab.detail} active={pathname === tab.href} />
-                  ))}
-                </nav>
-
-                <div className="section-block">
-                  <div className="eyebrow">Principle</div>
-                  <div className="mt-3 font-serif-ui text-3xl leading-tight text-[var(--foreground)]">Barakah over noise.</div>
-                  <p className="mt-3 max-w-xs text-sm leading-7 text-[var(--muted)]">
-                    Choose stronger ideas, calmer systems, and a product that feels composed enough to trust.
-                  </p>
-                </div>
-
-                <div className="section-block flex items-center justify-between gap-4">
+      <div className="command-shell">
+        <header className="border-b border-[var(--line)]">
+          <div className="mx-auto max-w-[1360px] px-4 py-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-4xl">
+                <div className="eyebrow">GuidedBarakah · founder command center</div>
+                <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] lg:items-end">
                   <div>
-                    <div className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Mode</div>
-                    <div className="mt-1 text-sm text-[var(--muted-strong)]">{theme === 'dark' ? 'After hours' : 'Day studio'}</div>
-                  </div>
-                  <Button variant="outline" onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}>
-                    {theme === 'dark' ? 'Light' : 'Dark'}
-                  </Button>
-                </div>
-              </div>
-            </aside>
-
-            <main id="main" className="page-shell min-w-0 space-y-10">
-              <header className="page-header pb-8">
-                <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-                  <div>
-                    <div className="eyebrow">Workspace</div>
-                    <div className="font-serif-ui mt-4 max-w-4xl text-[3.4rem] leading-[0.94] text-[var(--foreground)] sm:text-[4.6rem]">
-                      Build a world,
-                      <br />
-                      not another admin panel.
-                    </div>
-                    <p className="mt-4 max-w-3xl text-base leading-8 text-[var(--muted)] sm:text-lg">
-                      Editorial pacing, stronger type, cleaner surfaces, and calmer scroll behavior across today, signal, offers, and care.
+                    <Link href="/" className="block font-serif-ui text-[2.8rem] leading-[0.9] text-[var(--foreground)] sm:text-[4.2rem] lg:text-[5.25rem]">
+                      Founder war room.
+                    </Link>
+                    <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)] sm:text-base">
+                      Flat architecture, hard priorities, live signal. No floating card zoo. Just one place to decide what matters and move.
                     </p>
                   </div>
-                  <div className="inline-flex rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-2 text-sm text-[var(--muted-strong)]">
-                    Local-first workspace
+                  <div className="grid gap-3 border-t border-[var(--line)] pt-3 text-sm text-[var(--muted)] lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
+                    <div className="flex items-center justify-between gap-4 border-b border-[var(--line-soft)] pb-2">
+                      <span className="uppercase tracking-[0.18em]">Operating mode</span>
+                      <span className="text-[var(--muted-strong)]">{theme === 'dark' ? 'After hours' : 'Daylight review'}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4 border-b border-[var(--line-soft)] pb-2">
+                      <span className="uppercase tracking-[0.18em]">Principle</span>
+                      <span className="text-right text-[var(--muted-strong)]">Barakah over noise</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="uppercase tracking-[0.18em]">Theme</span>
+                      <Button variant="outline" onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}>
+                        {theme === 'dark' ? 'Light' : 'Dark'}
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </header>
+              </div>
+            </div>
+          </div>
+        </header>
 
-              {children}
-
-              <footer className="border-t border-[var(--line)] pt-5 text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
-                GuidedBarakah workspace · premium calm · deliberate systems
-              </footer>
-            </main>
+        <div className="border-b border-[var(--line)] bg-[var(--surface-muted)]">
+          <div className="mx-auto max-w-[1360px] px-4 sm:px-6 lg:px-8">
+            <nav className="grid gap-0 md:grid-cols-5" aria-label="Primary">
+              {tabs.map((tab, index) => (
+                <NavLink key={tab.href} href={tab.href} label={tab.label} detail={tab.detail} active={pathname === tab.href} index={index + 1} />
+              ))}
+            </nav>
           </div>
         </div>
+
+        <main id="main" className="page-shell min-w-0">
+          <div className="mx-auto max-w-[1360px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+            {children}
+            <footer className="mt-12 border-t border-[var(--line)] py-4 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">
+              GuidedBarakah workspace · founder cadence · deliberate systems
+            </footer>
+          </div>
+        </main>
       </div>
     </div>
   );
