@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'GuidedBarakah — Command Center',
-  description: 'Local-first dashboard for daily execution, growth, funnel analytics, and operations.',
+  title: 'GuidedBarakah Dashboard',
+  description: 'A local-first GuidedBarakah workspace for today, growth, funnel visibility, and operations.',
 };
 
 export default function RootLayout({

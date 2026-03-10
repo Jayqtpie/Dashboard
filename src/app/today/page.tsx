@@ -164,12 +164,12 @@ export default function TodayPage() {
     <div className="space-y-6 sm:space-y-7">
       <PageHeader
         eyebrow="TODAY"
-        title="Execute clean. Publish. Sprint."
-        description={`Pick a CTA keyword, publish, then run a focused 20-minute engagement sprint. ${pct}% of today’s checklist is complete.`}
+        title="Move with intention, not urgency"
+        description={`Choose a CTA keyword, publish with clarity, then step into a focused 20-minute engagement block. ${pct}% of today’s checklist is complete.`}
         right={
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-3 sm:min-w-[210px]">
-            <div className="text-xs text-[var(--muted)]">Picked CTA</div>
-            <div className="mt-1 truncate text-lg font-semibold text-[var(--gb-gold)]">{picked || '—'}</div>
+          <div className="rounded-[24px] border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-4 sm:min-w-[240px]">
+            <div className="eyebrow">Picked CTA</div>
+            <div className="mt-2 truncate serif-display text-2xl text-[var(--foreground)]">{picked || '—'}</div>
             <div className="mt-3 flex gap-2">
               <Button onClick={pickKeyword} disabled={!activeKeywords.length}>
                 Pick
